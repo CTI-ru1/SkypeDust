@@ -100,9 +100,10 @@ public class UserAccount {
                     skypeDustView.setContactList(constring);
                     skypeDustView.setAllowedList(getAllowedContacts());
                     cmdListener = new CommandListener(getAllowedContacts());
-                    voipListener = new VoipListener(mySession);
-                    voipListener.setAudio();
+                    //voipListener = new VoipListener(mySession);
+                    //voipListener.setAudio();
                     mySession.myJavaTutorialListeners.setcommandListener(cmdListener);
+                    
                 }
                 else{
                     //skypeDustView.changeStatusMessage("Logged out: Wrong Settings");
