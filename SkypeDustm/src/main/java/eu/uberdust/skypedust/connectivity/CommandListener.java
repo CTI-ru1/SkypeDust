@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.skypedust.connectivity;
+package eu.uberdust.skypedust.connectivity;
 
 import com.skype.api.Conversation;
 import com.skype.api.Message;
@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import com.skypedust.connectivity.UberClient;
-import com.skypedust.util.MySession;
+import eu.uberdust.skypedust.connectivity.UberClient;
+import eu.uberdust.skypedust.util.MySession;
 
 /**
  *

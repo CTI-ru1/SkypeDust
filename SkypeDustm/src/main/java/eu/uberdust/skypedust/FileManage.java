@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.skypedust;
+package eu.uberdust.skypedust;
 
 import java.io.File;
 import java.io.IOException;

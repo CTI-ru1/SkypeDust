@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.skypedust;
+package eu.uberdust.skypedust;
 
-import com.skypedust.ui.SkypeDustApp;
+import eu.uberdust.skypedust.ui.SkypeDustApp;
 
 /**
  *
@@ -39,7 +39,6 @@ public class SkypeDustMain {
 
         if(args.length==0){
             
-            System.out.println("No arguements");
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                 new SkypeDustApp().setVisible(true);
@@ -47,7 +46,20 @@ public class SkypeDustMain {
             });
         }
         else{
-           System.out.println("Got arguements");
+            switch(args[0]){
+                case "start":
+                    System.out.println("Starting Daemon");
+                    break;
+                case "stop":
+                    System.out.println("Stopping Daemon");
+                    break;
+                case "restart":
+                    System.out.println("Restarting Daemon");
+                    break;
+                default:
+                    System.out.println("Unknown command");
+                    break;
+            }
         }
     }
 }

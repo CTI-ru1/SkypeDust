@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.skypedust.useraccount;
+package eu.uberdust.skypedust.useraccount;
 
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 import java.io.FileInputStream;

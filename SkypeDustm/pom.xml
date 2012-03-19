@@ -27,6 +27,16 @@
         <jetty-version>8.0.4.v20111024</jetty-version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>repository.ru1</id>
+            <url>http://ru1.cti.gr/maven</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <layout>default</layout>
+        </repository>
+    </repositories>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -57,18 +67,6 @@
         <version>1.1</version>
     </dependency>
     <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-websocket</artifactId>
-        <version>${jetty-version}</version>
-        <type>jar</type>
-    </dependency>
-    <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-servlet</artifactId>
-        <version>${jetty-version}</version>
-        <type>jar</type>
-    </dependency>
-    <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>1.2.9</version>
@@ -84,5 +82,10 @@
       <version>1.2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>uberdust</groupId>
+            <artifactId>WebSocketsLibrary</artifactId>
+            <version>1.0</version>
+        </dependency>
   </dependencies>
 </project>

@@ -2,13 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.skypedust.ui;
+package eu.uberdust.skypedust.ui;
 
 import java.awt.CardLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
-import com.skypedust.useraccount.XmlConfs;
-import com.skypedust.useraccount.UserAccount;
+import eu.uberdust.skypedust.useraccount.XmlConfs;
+import eu.uberdust.skypedust.useraccount.UserAccount;
 
 /**
  *

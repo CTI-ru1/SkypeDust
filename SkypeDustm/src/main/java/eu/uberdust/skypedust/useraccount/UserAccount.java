@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.skypedust.useraccount;
+package eu.uberdust.skypedust.useraccount;
 
 import com.skype.api.Contact;
 import com.skype.api.ContactGroup.TYPE;
@@ -11,12 +11,12 @@ import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.ListModel;
-import com.skypedust.FileManage;
-import com.skypedust.ui.SkypeDustApp;
-import com.skypedust.appkeypair.AppKeyPairMgr;
-import com.skypedust.connectivity.CommandListener;
-import com.skypedust.connectivity.VoipListener;
-import com.skypedust.util.MySession;
+import eu.uberdust.skypedust.FileManage;
+import eu.uberdust.skypedust.ui.SkypeDustApp;
+import eu.uberdust.skypedust.appkeypair.AppKeyPairMgr;
+import eu.uberdust.skypedust.connectivity.CommandListener;
+import eu.uberdust.skypedust.connectivity.VoipListener;
+import eu.uberdust.skypedust.util.MySession;
 /**
  *
  * @author carnage
