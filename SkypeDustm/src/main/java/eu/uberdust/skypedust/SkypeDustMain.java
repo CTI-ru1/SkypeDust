@@ -56,6 +56,9 @@ public class SkypeDustMain {
                 case "restart":
                     System.out.println("Restarting Daemon");
                     break;
+                case "cmd":
+                    new SkypedustCmd().start();
+                    break;
                 default:
                     System.out.println("Unknown command");
                     break;

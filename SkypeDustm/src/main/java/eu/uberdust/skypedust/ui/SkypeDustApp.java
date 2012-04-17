@@ -32,6 +32,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
             passwordPasswordField.setText(userAccount.userSettings.get(XmlConfs.passwordtag).toString());
         }
         userAccount.initSaccount(this);
+        userAccount.startListener();
         this.addWindowListener(winlistener);
     }
     

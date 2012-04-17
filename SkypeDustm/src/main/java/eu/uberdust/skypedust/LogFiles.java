@@ -22,12 +22,13 @@ public class LogFiles {
     
     public static DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     
-    public static void writeLoginLog(String username,boolean action) {
+    public static void writeLoginLog(String username,int action) {
         
         String Log = "User: "+username+"\t"+"Action: ";
         
-        if(action) Log = Log+"Logged in";
-        else Log = Log+"Logged out";
+        if(action==0) Log = Log+"Logged in";
+        else if(action==1) Log = Log+"Logged out";
+        else Log = Log+"Failed attempt";
         
         writeLog(logins, Log);
     }
