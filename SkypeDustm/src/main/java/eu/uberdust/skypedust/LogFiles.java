@@ -4,8 +4,7 @@
  */
 package eu.uberdust.skypedust;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,15 +13,32 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author carnage
+ * @author Gkatziouras Emmanouil (gkatzioura)
  */
 public class LogFiles {
     
-    public static String messages = "messages.log";
+    public static final String messages = "messages.log";
+    public static final String logins = "logins.log";
     
     public static DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     
-    public static void writeLog(String path,String Log){
+    public static void writeLoginLog(String username,boolean action) {
+        
+        String Log = "User: "+username+"\t"+"Action: ";
+        
+        if(action) Log = Log+"Logged in";
+        else Log = Log+"Logged out";
+        
+        writeLog(logins, Log);
+    }
+    
+    public static void writeMessageLog(String contact,String message) {
+        
+        String Log = "Author: "+contact+"\t"+"Message: "+message;
+        writeLog(messages, Log);
+    }
+    
+    private static void writeLog(String path,String Log) {
         
         FileWriter fwrite = null;
         try {
@@ -34,5 +50,39 @@ public class LogFiles {
         } catch (IOException ex) {
             Logger.getLogger(LogFiles.class.getName()).log(Level.SEVERE, null, ex);
         }        
+    }
+    
+    public static String[][] lastMessages(int numlines) {
+        
+        String[][] lastmessages = new String[numlines][3];
+            
+        try {
+            
+            FileInputStream finStream = new FileInputStream(messages);
+            BufferedReader breader = new BufferedReader(new InputStreamReader(finStream));
+         
+            String strline;
+            int count = 0;
+            
+            while((strline=breader.readLine())!=null) {
+                            
+                if(count<numlines-1) count++;
+                else count =0;
+                
+                try{
+                    String[] words = strline.split("\t");
+                    lastmessages[count][0] = words[0];
+                    lastmessages[count][1] = words[1].replace("Author: ","");
+                    lastmessages[count][2] = words[2].replace("Message: ","");
+                }
+                catch (NullPointerException ex) {
+                    Logger.getLogger(LogFiles.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        catch (IOException ex) {
+            Logger.getLogger(LogFiles.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return lastmessages;
     }
 }

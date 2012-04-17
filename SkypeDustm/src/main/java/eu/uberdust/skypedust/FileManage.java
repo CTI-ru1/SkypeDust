@@ -12,7 +12,7 @@ import javax.crypto.Cipher;
 
 /**
  *
- * @author carnage
+ * @author Gkatziouras Emmanouil (gkatzioura)
  */
 public class FileManage {
 
@@ -20,8 +20,7 @@ public class FileManage {
     public static final String AllowedContactsFile = "AllowedContacts.xml";
     public static final String ConfigurationDir = "SkypeDustConf";
     public static final String LogFilesDir = "LogFiles";
-    public static final String Logaction = "logged.log";
-    public static final String CommandsLog = "commands.log";
+    public static final String Passfile = ".passwd";
     
     public File confdir;
     public File logfdir;
@@ -30,10 +29,7 @@ public class FileManage {
         
     private Cipher eCipher;
     private Cipher dCipher;
-    private static final String encryptKey = "I like wookies";
-    static final String HEXES = "0123456789ABCDEF";
-
-    
+            
     public FileManage(){
         
         confdir = new File(ConfigurationDir);
@@ -42,8 +38,6 @@ public class FileManage {
         createFile(this.confdir,SettingsFile);
         createFile(this.confdir,AllowedContactsFile);
         logfdir = new File(LogFilesDir);
-        createFile(logfdir,Logaction);
-        createFile(logfdir,CommandsLog);
     }
     
     public String getOsSlash(){

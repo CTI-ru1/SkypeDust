@@ -13,9 +13,11 @@ import eu.uberdust.communication.websocket.readings.WSReadingsClient;
  */
 public class SkydustWebSockets {
 
-    private final String webSocketUrl = "ws://carrot.cti.gr:8080/uberdust/insertreading.ws"; 
+    //private final String webSocketUrl = "ws://carrot.cti.gr:8080/uberdust/insertreading.ws"; 
+    
     
     public SkydustWebSockets(){
     
+        
     }
 }

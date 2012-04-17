@@ -19,7 +19,7 @@ import eu.uberdust.skypedust.util.MySession;
 
 /**
  *
- * @author carnage
+ * @author Gkatziouras Emmanouil (gkatzioura)
  */
 public class CommandListener {
 
@@ -38,14 +38,9 @@ public class CommandListener {
     
     public String messageParse(String author,String Body){    
         
-        /*
-         * Just for start
-         */
-        
         if(commandcons.contains(author))
         {
-            String toret = "Unregognized command please type help to see your options";
-            
+            String toret = "Unregognized command please type help to see your options";            
             
             String[] commands = Body.split(" ");
             

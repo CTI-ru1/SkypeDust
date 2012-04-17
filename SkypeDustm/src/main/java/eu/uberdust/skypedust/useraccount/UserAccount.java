@@ -12,14 +12,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.ListModel;
 import eu.uberdust.skypedust.FileManage;
+import eu.uberdust.skypedust.LogFiles;
 import eu.uberdust.skypedust.ui.SkypeDustApp;
 import eu.uberdust.skypedust.appkeypair.AppKeyPairMgr;
 import eu.uberdust.skypedust.connectivity.CommandListener;
 import eu.uberdust.skypedust.connectivity.VoipListener;
 import eu.uberdust.skypedust.util.MySession;
+import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 /**
  *
- * @author carnage
+ * @author Gkatziouras Emmanouil (gkatzioura)
  */
 public class UserAccount {
 
@@ -28,6 +39,8 @@ public class UserAccount {
     private static MySession mySession = new MySession();
     private AliveAccount aliveAccount;
     public static final String noContacts = "No Contacts";
+    private static final String algo = "AES";
+    private static final byte[] enckey = new byte[]{'C', 'h', 'a', 'n', 'g', 'e', 't','h', 'i', 's', 'o','n', 'e', '!', '!', '!' };
     
     FileManage fileManage = new FileManage();
     private XmlConfs xmlConfs;
@@ -36,15 +49,61 @@ public class UserAccount {
     
     public UserAccount(){
             xmlConfs = new XmlConfs();
-            userSettings = xmlConfs.readSettingsConf(fileManage.dpath+fileManage.SettingsFile);
-            
-            System.out.println(userSettings.get("username"));
+            userSettings = xmlConfs.readSettingsConf(fileManage.dpath+fileManage.SettingsFile);            
+            userSettings.put(XmlConfs.passwordtag,getEncrypted());
     }
     
     public void setAccount(String username,String nickname,String password){
 
         System.out.println(username+"/"+nickname+"/"+password);
-        xmlConfs.writeSettingsConf(fileManage.dpath+fileManage.SettingsFile, username, nickname, password);
+        xmlConfs.writeSettingsConf(fileManage.dpath+fileManage.SettingsFile, username, nickname,"nope");
+        storeEncrypted(password);
+    }
+    
+    private void storeEncrypted(String password) {
+        
+        try {
+            Key key = new SecretKeySpec(enckey,algo);
+            Cipher c = Cipher.getInstance(algo);
+            c.init(Cipher.ENCRYPT_MODE,key);
+            byte[] encval = c.doFinal(password.getBytes());
+            FileOutputStream fout = new FileOutputStream(FileManage.Passfile);
+            PrintStream pstream = new PrintStream(fout);
+            pstream.println(new BASE64Encoder().encode(encval));
+            
+        } catch (IOException | InvalidKeyException |
+                IllegalBlockSizeException | BadPaddingException |
+                NoSuchAlgorithmException | NoSuchPaddingException ex) {
+            Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+    }
+    
+    private String getEncrypted() {
+        
+        String password = null;
+        
+        try {
+            Key key = new SecretKeySpec(enckey,algo);
+            Cipher c = Cipher.getInstance(algo);
+            DataInputStream datains = new DataInputStream(new FileInputStream(FileManage.Passfile));
+            BufferedReader breader = new BufferedReader(new InputStreamReader(datains));
+            String encpass = breader.readLine();
+            
+            c.init(Cipher.DECRYPT_MODE,key);
+            byte[] decordval = new BASE64Decoder().decodeBuffer(encpass);
+            byte[] decVal = c.doFinal(decordval);
+            
+            password = new String(decVal);
+            
+        } catch (IllegalBlockSizeException ex) {
+            Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BadPaddingException ex) {
+            Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeyException | IOException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
+            Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return password;
     }
     
     public void initSaccount(SkypeDustApp skypeDustView){
@@ -55,6 +114,7 @@ public class UserAccount {
     public void stopSaccount(){
         aliveAccount.aliveThread=false;
         mySession.mySignInMgr.Logout(null, mySession);
+        LogFiles.writeLoginLog(userSettings.get("username").toString(),false);
     }
     
     public void saveAllowedContacts(String[] allowedContacts){
@@ -91,6 +151,8 @@ public class UserAccount {
             if(appKeyPairMgr.setAppKeyPairFromFile()){    
                 mySession.doCreateSession(null,userSettings.get("username").toString(), appKeyPairMgr);
                 if(mySession.mySignInMgr.Login(null, mySession,userSettings.get("password").toString())){
+                     
+                    LogFiles.writeLoginLog(userSettings.get("username").toString(),true);
                     
                     //skypeDustView.changeStatusMessage("Logged in");
                     Contact[] contacts = mySession.mySkype.GetHardwiredContactGroup(TYPE.ALL_BUDDIES).GetContacts();

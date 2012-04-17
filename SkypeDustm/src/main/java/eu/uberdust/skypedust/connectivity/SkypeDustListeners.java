@@ -15,7 +15,7 @@ import java.util.Date;
 
 /**
  *
- * @author carnage
+ * @author Gkatziouras Emmanouil (gkatzioura)
  */
 public class SkypeDustListeners extends JavaTutorialListeners {
 
@@ -44,7 +44,7 @@ public class SkypeDustListeners extends JavaTutorialListeners {
                 String reply=null;
             	System.out.print("Message posted from: "+msgAuthor+"\n"+
                        "Text "+msgBody);
-                LogFiles.writeLog(LogFiles.messages,"Message posted from: "+msgAuthor+"\t"+"Text: "+msgBody);                
+                LogFiles.writeMessageLog(msgAuthor,msgBody);                
                 Calendar targetDate = Calendar.getInstance();
                 if(commandListener!=null){
                     reply = commandListener.messageParse(msgAuthor, msgBody);
