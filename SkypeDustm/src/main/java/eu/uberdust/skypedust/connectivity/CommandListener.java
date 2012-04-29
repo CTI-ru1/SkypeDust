@@ -4,18 +4,9 @@
  */
 package eu.uberdust.skypedust.connectivity;
 
-import com.skype.api.Conversation;
-import com.skype.api.Message;
-import com.skype.api.Message.MessageListener;
-import com.skype.api.Message.PROPERTY;
-import com.skype.api.SkypeObject;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
-import eu.uberdust.skypedust.connectivity.UberClient;
-import eu.uberdust.skypedust.util.MySession;
 
 /**
  *
@@ -29,9 +20,7 @@ public class CommandListener {
     public CommandListener(String[] contacts){
         
         commandcons = new ArrayList<>();
-        for(String con : contacts){
-            commandcons.add(con);
-        }
+        commandcons.addAll(Arrays.asList(contacts));
         
         uberClient = new UberClient("http://uberdust.cti.gr/rest/testbed/1");
     }
@@ -41,12 +30,10 @@ public class CommandListener {
         if(commandcons.contains(author))
         {
             String toret = "Unregognized command please type help to see your options";            
-            
             String[] commands = Body.split(" ");
-            
             if(commands.length==4){
             
-                if((commands[0]=="node")&(commands[1]=="temperature")&(commands[2]=="set")){
+                if(("node".equals(commands[0]))&("temperature".equals(commands[1]))&("set".equals(commands[2]))){
                     toret = "setting the node temperature";
                 }
 

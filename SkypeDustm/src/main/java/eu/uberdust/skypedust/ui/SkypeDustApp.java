@@ -5,14 +5,14 @@
 package eu.uberdust.skypedust.ui;
 
 import eu.uberdust.skypedust.LogFiles;
-import java.awt.CardLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.JDialog;
-import eu.uberdust.skypedust.useraccount.XmlConfs;
 import eu.uberdust.skypedust.useraccount.UserAccount;
+import java.awt.CardLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import javax.swing.DefaultListModel;
+import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
+import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
 
 /**
  *
@@ -26,14 +26,15 @@ public class SkypeDustApp extends javax.swing.JFrame {
     public SkypeDustApp() {
         initComponents();
         userAccount = new UserAccount();
-        if(!userAccount.userSettings.isEmpty()){
-            usernameTextField.setText(userAccount.userSettings.get(XmlConfs.usernametag).toString());
-            nicknameTextField.setText(userAccount.userSettings.get(XmlConfs.nicknametag).toString());
-            passwordPasswordField.setText(userAccount.userSettings.get(XmlConfs.passwordtag).toString());
+        if(userAccount.userSettings!=null){
+            usernameTextField.setText(userAccount.userSettings.getUsername());
+            nicknameTextField.setText(userAccount.userSettings.getNickname());
+            passwordPasswordField.setText(userAccount.userSettings.getPassword());
         }
         userAccount.initSaccount(this);
         userAccount.startListener();
         this.addWindowListener(winlistener);
+        SkypedustWebSocket.getInstance().getUpdate("urn:test:0x1","light");
     }
     
     //@Override
@@ -74,6 +75,8 @@ public class SkypeDustApp extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        settingsPanel = new javax.swing.JPanel();
+        asyncmsgCheckBox = new javax.swing.JCheckBox();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -81,6 +84,8 @@ public class SkypeDustApp extends javax.swing.JFrame {
         skypeAccountItem = new javax.swing.JMenuItem();
         skypefriendsItem = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
@@ -124,7 +129,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                             .addComponent(usernameTextField)
                             .addComponent(nicknameTextField)
                             .addComponent(passwordPasswordField, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE))
-                        .addContainerGap(126, Short.MAX_VALUE))
+                        .addContainerGap(135, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, skypeAccountPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -145,7 +150,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(passwordPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addGap(32, 32, 32))
         );
@@ -186,7 +191,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
                 .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -216,7 +221,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2)
                     .addComponent(jLabel8))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
 
         mainPanel.add(skypeFriendPanel, "card3");
@@ -247,10 +252,38 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(87, Short.MAX_VALUE))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
 
         mainPanel.add(skypeMessagePanel1, "card4");
+
+        settingsPanel.setName("card5");
+
+        asyncmsgCheckBox.setText("Unsynchronous Messaging");
+        asyncmsgCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                asyncmsgCheckBoxActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
+        settingsPanel.setLayout(settingsPanelLayout);
+        settingsPanelLayout.setHorizontalGroup(
+            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(settingsPanelLayout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(asyncmsgCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(300, Short.MAX_VALUE))
+        );
+        settingsPanelLayout.setVerticalGroup(
+            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(settingsPanelLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(asyncmsgCheckBox)
+                .addContainerGap(254, Short.MAX_VALUE))
+        );
+
+        mainPanel.add(settingsPanel, "card5");
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -294,6 +327,18 @@ public class SkypeDustApp extends javax.swing.JFrame {
         skypeMenu.add(jMenuItem1);
 
         menuBar.add(skypeMenu);
+
+        jMenu1.setText("Settings");
+
+        jMenuItem2.setText("Messaging");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
+        menuBar.add(jMenu1);
 
         helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
@@ -362,6 +407,19 @@ public class SkypeDustApp extends javax.swing.JFrame {
     private void skypeAccountItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_skypeAccountItemActionPerformed
         cardSwitcher("card2");
     }//GEN-LAST:event_skypeAccountItemActionPerformed
+
+    private void asyncmsgCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_asyncmsgCheckBoxActionPerformed
+        if(asyncmsgCheckBox.isCursorSet()) {
+            asyncmsg = true;
+        }
+        else {
+            asyncmsg = false;
+        }
+    }//GEN-LAST:event_asyncmsgCheckBoxActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        cardSwitcher("card5");
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void cardSwitcher(String card){
         CardLayout cardLayout = (CardLayout)(mainPanel.getLayout());
@@ -432,6 +490,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JCheckBox asyncmsgCheckBox;
     private javax.swing.JList concommandsjList;
     private javax.swing.JTextField contactTextField;
     private javax.swing.JList contactsjList;
@@ -449,7 +508,9 @@ public class SkypeDustApp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -458,6 +519,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JTextField nicknameTextField;
     private javax.swing.JPasswordField passwordPasswordField;
+    private javax.swing.JPanel settingsPanel;
     private javax.swing.JMenuItem skypeAccountItem;
     private javax.swing.JPanel skypeAccountPanel;
     private javax.swing.JPanel skypeFriendPanel;
@@ -470,4 +532,5 @@ public class SkypeDustApp extends javax.swing.JFrame {
     private ConlistHandler conlistHandler = new ConlistHandler();
     private DefaultListModel model = new DefaultListModel();
     private DefaultTableModel tableModel = new DefaultTableModel();
+    private boolean asyncmsg = false;
 }

@@ -5,6 +5,7 @@
 package eu.uberdust.skypedust.useraccount;
 
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
+import eu.uberdust.skypedust.pojos.UserSettings;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -40,8 +41,9 @@ public class XmlConfs {
     private static final String friend = "friend";
     private static final String usernameatr = "username";
     
-    public Hashtable readSettingsConf(String settingsFile){
-        Hashtable userSettings = new Hashtable();
+    public UserSettings readSettingsConf(String settingsFile){
+        //Hashtable userSettings = new Hashtable();
+        UserSettings userSettings = new UserSettings();
         InputStream instream = null;
         try {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -54,8 +56,12 @@ public class XmlConfs {
                     String tag = element.getName().getLocalPart();
                     String value = eventReader.nextEvent().asCharacters().getData();
                     
-                    if(tag.equals(passwordtag)|tag.equals(nicknametag)|tag.equals(usernametag))
-                        userSettings.put(tag, value);
+                    if(tag.equals(passwordtag)) 
+                        userSettings.setPassword(value);
+                    if(tag.equals(nicknametag)) 
+                        userSettings.setNickname(value);
+                    if(tag.equals(usernametag)) 
+                        userSettings.setUsername(value);
                 }
             }
             instream.close();

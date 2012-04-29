@@ -10,6 +10,7 @@ import eu.uberdust.skypedust.LogFiles;
 import eu.uberdust.skypedust.appkeypair.AppKeyPairMgr;
 import eu.uberdust.skypedust.connectivity.CommandListener;
 import eu.uberdust.skypedust.connectivity.VoipListener;
+import eu.uberdust.skypedust.pojos.UserSettings;
 import eu.uberdust.skypedust.ui.SkypeDustApp;
 import eu.uberdust.skypedust.util.MySession;
 import java.io.*;
@@ -32,7 +33,6 @@ import sun.misc.BASE64Encoder;
  */
 public class UserAccount {
 
-    public Hashtable userSettings;
     private static AppKeyPairMgr appKeyPairMgr = new AppKeyPairMgr();
     private static MySession mySession = new MySession();
     public static final String noContacts = "No Contacts";
@@ -40,6 +40,7 @@ public class UserAccount {
     private static final byte[] enckey = new byte[]{'C', 'h', 'a', 'n', 'g', 'e', 't','h', 'i', 's', 'o','n', 'e', '!', '!', '!' };
     
     FileManage fileManage = new FileManage();
+    public UserSettings userSettings;
     private XmlConfs xmlConfs;
     private CommandListener cmdListener;
     private VoipListener voipListener;
@@ -47,7 +48,7 @@ public class UserAccount {
     public UserAccount(){
             xmlConfs = new XmlConfs();
             userSettings = xmlConfs.readSettingsConf(fileManage.dpath+FileManage.SettingsFile);            
-            userSettings.put(XmlConfs.passwordtag,getEncrypted());
+            userSettings.setPassword(getEncrypted());
     }
     
     public void setAccount(String username,String nickname,String password){
@@ -92,11 +93,8 @@ public class UserAccount {
             
             password = new String(decVal);
             
-        } catch (IllegalBlockSizeException ex) {
-            Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (BadPaddingException ex) {
-            Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidKeyException | IOException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
+        } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException |
+                IOException | NoSuchAlgorithmException | NoSuchPaddingException  ex) {
             Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -109,12 +107,12 @@ public class UserAccount {
             startRuntime();
             setKeypair();
             sessionSignin();
-            LogFiles.writeLoginLog(userSettings.get("username").toString(),0);
+            LogFiles.writeLoginLog(userSettings.getUsername(),0);
         }
         catch (UserException ex) {
             Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
             if(ex.getMessage().equals(UserException.WrongCredentials));
-                LogFiles.writeLoginLog(userSettings.get("username").toString(),-1);
+                LogFiles.writeLoginLog(userSettings.getUsername(),-1);
         }
     }
 
@@ -126,8 +124,8 @@ public class UserAccount {
         
     private void sessionSignin() throws UserException {
         
-        mySession.doCreateSession(null,userSettings.get("username").toString(), appKeyPairMgr);
-        if(!mySession.mySignInMgr.Login(null, mySession,userSettings.get("password").toString()))
+        mySession.doCreateSession(null,userSettings.getUsername().toString(), appKeyPairMgr);
+        if(!mySession.mySignInMgr.Login(null, mySession,userSettings.getPassword().toString()))
             throw new UserException(UserException.WrongCredentials);
     }    
 
@@ -141,7 +139,7 @@ public class UserAccount {
             
         ArrayList allowedContacts = xmlConfs.readuAllowedContacts(
                 fileManage.dpath+FileManage.AllowedContactsFile,
-                userSettings.get("username").toString());
+                userSettings.getUsername());
         if(allowedContacts.isEmpty()){
             allowedContacts.add(noContacts);
         }
@@ -170,7 +168,7 @@ public class UserAccount {
     public void stopSaccount(){
         
         mySession.mySignInMgr.Logout(null, mySession);
-        LogFiles.writeLoginLog(userSettings.get("username").toString(),1);
+        LogFiles.writeLoginLog(userSettings.getUsername(),1);
     }
     
     public void saveAllowedContacts(String[] allowedContacts){
@@ -178,6 +176,6 @@ public class UserAccount {
         System.out.println(new Integer(allowedContacts.length).toString());
         xmlConfs.writeAllowedContacts(fileManage.dpath+FileManage.AllowedContactsFile,
                 allowedContacts,
-                userSettings.get("username").toString());
+                userSettings.getUsername());
     }    
 }
