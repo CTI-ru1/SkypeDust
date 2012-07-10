@@ -30,7 +30,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 /**
  *
- * @author carnage
+ * @author Gkatziouras Emmanouil (gkatzioura)
  */
 public class XmlConfs {
 
