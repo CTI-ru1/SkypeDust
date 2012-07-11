@@ -495,34 +495,28 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="jScrollPane4" alignment="1" min="-2" pref="323" max="-2" attributes="0"/>
+                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="jLabel10" max="32767" attributes="0"/>
+                              <Component id="jLabel12" max="32767" attributes="0"/>
+                          </Group>
                           <Component id="jScrollPane5" pref="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                              <Component id="jTextField2" max="32767" attributes="0"/>
-                          </Group>
-                          <Component id="jScrollPane4" alignment="1" pref="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jLabel10" max="32767" attributes="0"/>
-                                  <Component id="jLabel11" max="32767" attributes="0"/>
-                                  <Component id="jLabel12" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jTextField1" min="-2" pref="216" max="-2" attributes="0"/>
-                          </Group>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="jButton4" max="32767" attributes="0"/>
-                              <Component id="jButton5" max="32767" attributes="0"/>
-                              <Component id="jButton3" max="32767" attributes="0"/>
-                              <Component id="jButton6" alignment="0" max="32767" attributes="0"/>
-                              <Component id="jButton7" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="jButton4" max="32767" attributes="0"/>
+                                      <Component id="jButton5" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="jButton8" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButton3" min="-2" pref="51" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="jButton6" alignment="1" min="-2" pref="51" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jButton8" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButton7" min="-2" pref="51" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="106" max="32767" attributes="0"/>
                   </Group>
@@ -534,38 +528,30 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton3" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
+                              <Component id="jButton3" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jButton4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="12" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                               <Component id="jButton5" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jScrollPane4" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTextField2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton6" alignment="3" min="-2" pref="24" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane5" min="-2" pref="70" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="jButton7" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButton6" min="-2" pref="24" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jButton7" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
                               <Component id="jButton8" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <Component id="jScrollPane5" pref="0" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="42" max="32767" attributes="0"/>
+                      <EmptySpace pref="45" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -575,13 +561,6 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Request Formatter"/>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="jLabel11">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Add new Plugin"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="jTextField1">
             </Component>
             <Component class="javax.swing.JButton" name="jButton3">
               <Properties>
@@ -602,13 +581,8 @@
               <SubComponents>
                 <Component class="javax.swing.JTable" name="jTable2">
                   <Properties>
-                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="4" rowCount="4">
-                        <Column editable="true" title="Title 1" type="java.lang.Object"/>
-                        <Column editable="true" title="Title 2" type="java.lang.Object"/>
-                        <Column editable="true" title="Title 3" type="java.lang.Object"/>
-                        <Column editable="true" title="Title 4" type="java.lang.Object"/>
-                      </Table>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    new Object [][] {&#xa;        {&quot;Default&quot;,&quot;Default&quot;,&quot;Default&quot;},&#xa;        {null, null, null},&#xa;        {null, null, null},&#xa;        {null, null, null}&#xa;    },&#xa;    new String [] {&#xa;        &quot;Name&quot;, &quot;Author&quot;, &quot;On&quot;&#xa;    }&#xa;)" type="code"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -624,17 +598,13 @@
                 <Property name="text" type="java.lang.String" value="Remove"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel13">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Add new Plugin"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="jTextField2">
-            </Component>
             <Component class="javax.swing.JButton" name="jButton6">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Add"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton6ActionPerformed"/>
+              </Events>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane5">
 
@@ -642,13 +612,8 @@
               <SubComponents>
                 <Component class="javax.swing.JTable" name="jTable3">
                   <Properties>
-                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="4" rowCount="4">
-                        <Column editable="true" title="Title 1" type="java.lang.Object"/>
-                        <Column editable="true" title="Title 2" type="java.lang.Object"/>
-                        <Column editable="true" title="Title 3" type="java.lang.Object"/>
-                        <Column editable="true" title="Title 4" type="java.lang.Object"/>
-                      </Table>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    new Object [][] {&#xa;        {null, null, null},&#xa;        {null, null, null},&#xa;        {null, null, null},&#xa;        {null, null, null}&#xa;    },&#xa;    new String [] {&#xa;        &quot;Name&quot;, &quot;Author&quot;, &quot;On&quot;&#xa;    }&#xa;)" type="code"/>
                     </Property>
                   </Properties>
                 </Component>
