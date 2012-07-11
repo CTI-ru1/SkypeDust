@@ -613,17 +613,17 @@ public class SkypeDustApp extends javax.swing.JFrame {
 
         @Override
         public void windowClosed(WindowEvent e) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            //throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
         public void windowIconified(WindowEvent e) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            //throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
         public void windowDeiconified(WindowEvent e) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            //throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
@@ -634,7 +634,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
 
         @Override
         public void windowDeactivated(WindowEvent e) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            //throw new UnsupportedOperationException("Not supported yet.");
         }
     };    
     
