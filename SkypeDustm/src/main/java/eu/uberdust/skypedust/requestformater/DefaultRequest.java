@@ -10,9 +10,9 @@ import java.util.List;
 
 /**
  *
- * @author gkatzioura
+ * @author Gkatziouras Emmanouil (gkatzioura)
  */
-public class DefaultRequests implements RequestInterface {
+public class DefaultRequest implements RequestInterface {
 
     private List<String> commandcons;
     private UberClient uberClient;

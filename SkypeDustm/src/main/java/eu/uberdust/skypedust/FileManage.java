@@ -21,9 +21,11 @@ public class FileManage {
     public static final String ConfigurationDir = "SkypeDustConf";
     public static final String LogFilesDir = "LogFiles";
     public static final String Passfile = ".passwd";
+    public static final String PluginDir = "plugins";
     
     public File confdir;
     public File logfdir;
+    public File plugdir;
     public String dpath;
     private static final String ALGO = "AES";
         
@@ -32,6 +34,8 @@ public class FileManage {
             
     public FileManage(){
         
+        plugdir = new File(PluginDir);
+        if(!this.plugdir.exists()) this.plugdir.mkdir();
         confdir = new File(ConfigurationDir);
         if(!this.confdir.exists()) this.confdir.mkdir();
         dpath = this.confdir.getPath()+getOsSlash();
