@@ -4,7 +4,9 @@
  */
 package eu.uberdust.skypedust.ui;
 
+import eu.uberdust.skypedust.FileManage;
 import eu.uberdust.skypedust.LogFiles;
+import eu.uberdust.skypedust.PluginException;
 import eu.uberdust.skypedust.PluginManager;
 import eu.uberdust.skypedust.useraccount.UserAccount;
 import java.awt.CardLayout;
@@ -14,6 +16,10 @@ import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
 import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
+import eu.uberdust.skypedust.pojos.PluginSettings;
+import eu.uberdust.skypedust.requestformater.RequestInterface;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 
 /**
@@ -36,7 +42,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
         userAccount.initSaccount(this);
         userAccount.startListener();
         this.addWindowListener(winlistener);
-        SkypedustWebSocket.getInstance().getUpdate("urn:test:0x1","light");
+        //SkypedustWebSocket.getInstance().getUpdate("urn:test:0x1","light");
     }
     
     //@Override
@@ -79,6 +85,9 @@ public class SkypeDustApp extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         settingsPanel = new javax.swing.JPanel();
         asyncmsgCheckBox = new javax.swing.JCheckBox();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jButton9 = new javax.swing.JButton();
         pluginsPanel = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
@@ -167,7 +176,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(passwordPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 161, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addGap(32, 32, 32))
         );
@@ -208,7 +217,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
                 .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -238,7 +247,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2)
                     .addComponent(jLabel8))
-                .addContainerGap(80, Short.MAX_VALUE))
+                .addContainerGap(82, Short.MAX_VALUE))
         );
 
         mainPanel.add(skypeFriendPanel, "card3");
@@ -260,7 +269,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addGroup(skypeMessagePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         skypeMessagePanel1Layout.setVerticalGroup(
             skypeMessagePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -274,12 +283,21 @@ public class SkypeDustApp extends javax.swing.JFrame {
 
         mainPanel.add(skypeMessagePanel1, "card4");
 
-        settingsPanel.setName("card5");
+        settingsPanel.setName("card5"); // NOI18N
 
         asyncmsgCheckBox.setText("Unsynchronous Messaging");
         asyncmsgCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 asyncmsgCheckBoxActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setText("UberDust Url");
+
+        jButton9.setText("Set Url");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
             }
         });
 
@@ -289,20 +307,32 @@ public class SkypeDustApp extends javax.swing.JFrame {
             settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(settingsPanelLayout.createSequentialGroup()
                 .addGap(26, 26, 26)
-                .addComponent(asyncmsgCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(300, Short.MAX_VALUE))
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11)
+                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(jButton9))
+                    .addComponent(asyncmsgCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
         settingsPanelLayout.setVerticalGroup(
             settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(settingsPanelLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(21, 21, 21)
+                .addComponent(jLabel11)
+                .addGap(18, 18, 18)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton9))
+                .addGap(31, 31, 31)
                 .addComponent(asyncmsgCheckBox)
-                .addContainerGap(288, Short.MAX_VALUE))
+                .addContainerGap(203, Short.MAX_VALUE))
         );
 
         mainPanel.add(settingsPanel, "card5");
 
-        pluginsPanel.setName("card6");
+        pluginsPanel.setName("card6"); // NOI18N
 
         jLabel10.setText("Request Formatter");
 
@@ -315,20 +345,16 @@ public class SkypeDustApp extends javax.swing.JFrame {
 
         jLabel12.setText("Auto Plugin");
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"Default","Default","Default"},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "Name", "Author", "On"
-            }
-        ));
+        reqpluginModel.addColumn("Name");
+        jTable2.setModel(reqpluginModel);
         jScrollPane4.setViewportView(jTable2);
 
         jButton4.setText("Select");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Remove");
 
@@ -367,19 +393,16 @@ public class SkypeDustApp extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pluginsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addGroup(pluginsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pluginsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pluginsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pluginsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jButton8)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jButton6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(106, Short.MAX_VALUE))
+                .addGroup(pluginsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
+                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(108, Short.MAX_VALUE))
         );
         pluginsPanelLayout.setVerticalGroup(
             pluginsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -406,7 +429,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                         .addGap(9, 9, 9)
                         .addComponent(jButton8))
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         mainPanel.add(pluginsPanel, "card6");
@@ -456,7 +479,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
 
         jMenu1.setText("Settings");
 
-        jMenuItem2.setText("Messaging");
+        jMenuItem2.setText("Settings");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem2ActionPerformed(evt);
@@ -498,7 +521,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 510, Short.MAX_VALUE)
+            .addGap(0, 531, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -564,14 +587,43 @@ public class SkypeDustApp extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        
         jFileChooser.showDialog(this,"Select Request Formatter Plugin");
-        PluginManager.addrequestFormatter(jFileChooser.getSelectedFile().getAbsolutePath());
+        try {
+            String path = jFileChooser.getSelectedFile().getAbsolutePath();
+            PluginSettings pluginSettings = PluginManager.addrequestFormatter(path);
+            
+            if(pluginSettings!=null) {
+                reqpluginModel.addRow(new Object[]{pluginSettings.getPath()});
+            }
+        } catch (PluginException ex) {
+            Logger.getLogger(SkypeDustApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         jFileChooser.showDialog(this,"Select Auto Plugin");
         
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    
+        int i;
+        if(( i = jTable2.getSelectedRow())!=-1) {
+            System.out.println(reqpluginModel.getValueAt(0, i));
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        System.out.println(jTextField1.getText());
+        String urlreg = "^(https?|ftp|file)://.+$";
+        if(jTextField1.getText().matches(urlreg)) {
+            System.out.println("matched");
+        }
+        else {
+            System.out.println("no matched");
+        }
+    }//GEN-LAST:event_jButton9ActionPerformed
 
     private void cardSwitcher(String card){
         CardLayout cardLayout = (CardLayout)(mainPanel.getLayout());
@@ -658,8 +710,10 @@ public class SkypeDustApp extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -682,6 +736,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JTextField nicknameTextField;
@@ -702,5 +757,6 @@ public class SkypeDustApp extends javax.swing.JFrame {
     private ConlistHandler conlistHandler = new ConlistHandler();
     private DefaultListModel model = new DefaultListModel();
     private DefaultTableModel tableModel = new DefaultTableModel();
+    private DefaultTableModel reqpluginModel = new DefaultTableModel();
     private boolean asyncmsg = false;
 }

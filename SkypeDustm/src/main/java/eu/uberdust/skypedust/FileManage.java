@@ -19,6 +19,7 @@ public class FileManage {
     public static final String SettingsFile = "Settings.xml";
     public static final String AllowedContactsFile = "AllowedContacts.xml";
     public static final String ConfigurationDir = "SkypeDustConf";
+    public static final String ServerConf = "Server.xml";
     public static final String LogFilesDir = "LogFiles";
     public static final String Passfile = ".passwd";
     public static final String PluginDir = "plugins";

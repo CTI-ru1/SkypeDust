@@ -177,5 +177,6 @@ public class UserAccount {
         xmlConfs.writeAllowedContacts(fileManage.dpath+FileManage.AllowedContactsFile,
                 allowedContacts,
                 userSettings.getUsername());
-    }    
+    }
+    
 }

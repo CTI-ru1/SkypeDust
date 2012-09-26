@@ -4,6 +4,7 @@
  */
 package eu.uberdust.skypedust;
 
+import eu.uberdust.skypedust.pojos.PluginSettings;
 import eu.uberdust.skypedust.requestformater.DefaultRequest;
 import eu.uberdust.skypedust.requestformater.RequestInterface;
 import java.io.*;
@@ -17,42 +18,95 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  *
- * @author gkatzioura
+ * @author Gkatziouras Emmanouil (gkatzioura)
  */
 public class PluginManager {
 
+    public static final String requestag = "request";
+    
     public static void AutoMode() {
 
     }
     
-    public static RequestInterface addrequestFormatter(String pluginpath){
+    public static PluginSettings addrequestFormatter(String pluginpath) throws PluginException{
 
-        String toget = unzip(pluginpath);    
-        Class class1 = getjarClass(toget,"SkypeDustPlugin");
+        PluginSettings pluginSettings = new PluginSettings();
+        unzip(pluginpath,pluginSettings);
+        if(pluginSettings.getJarname()!=null) {
+
+            readxmlSettings(pluginSettings);
+            
+            if(pluginSettings.getType().equals(requestag)) {
+            
+                Class class1 = getjarClass(pluginSettings.getJarname(),pluginSettings.getMainclass());
         
-        if(class1!=null) {
-            try {
-                RequestInterface reqInterface = (RequestInterface) class1.newInstance();
-                System.out.println(reqInterface.uberRequest("",""));
-                return reqInterface;
-            } catch (InstantiationException ex) {
-                Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+                if(class1!=null) {
+                    return pluginSettings;
+                    /*
+                    try {
+                        RequestInterface reqInterface = (RequestInterface) class1.newInstance();
+                        System.out.println(reqInterface.uberRequest("",""));
+                        //return reqInterface;
+                        return pluginSettings;
+                    } catch (InstantiationException ex) {
+                        Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+                    }*/
+                }
+            
+            } else {
+                throw new PluginException(PluginException.exformatter);
             }
-        }       
+        } else {
+            throw  new PluginException(PluginException.nojar);
+        }
+        return null;
+    }
+    
+    public static RequestInterface selectFormatter(String path) throws PluginException {
+    
+        PluginSettings pluginSettings = new PluginSettings();
+        pluginSettings.setPath(path);
+        String jarname = new File(pluginSettings.getPath()).listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.contains("jar");               
+            }
+        })[0].getName();
         
-        return new DefaultRequest();
+        readxmlSettings(pluginSettings);
+        
+        pluginSettings.setJarname(jarname);
+        
+        if(pluginSettings.getType().equals(requestag)) {
+            
+            Class class1 = getjarClass(pluginSettings.getJarname(),pluginSettings.getMainclass());
+        
+            if(class1!=null) {
+                try {
+                    RequestInterface reqInterface = (RequestInterface) class1.newInstance();
+                    System.out.println(reqInterface.uberRequest("",""));
+                    return reqInterface;
+                } catch (InstantiationException ex) {
+                    Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new PluginException(PluginException.notproper);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new PluginException(PluginException.notproper);
+                }
+            } else throw new PluginException(PluginException.notproper);
+        } else throw new PluginException(PluginException.exformatter);   
     }
-    
-    public static RequestInterface requestFormatter() {
-    
-        return new DefaultRequest();
-    }
-    
+
     private static Class getjarClass(String jarpath,String classname) {
     
         File file = new File(jarpath);
@@ -86,46 +140,70 @@ public class PluginManager {
         return null;
     }
     
-    private static String unzip(String zipath) {
+    private static void unzip(String zipath,PluginSettings pluginSettings) throws PluginException {
       
         String myjar = null;
         
         try {
             ZipFile zipFile = new ZipFile(zipath);
             String plugfolder = FileManage.PluginDir+"/"+new File(zipath).getName().replace(".zip", "");
+            pluginSettings.setPath(plugfolder);
             System.out.println("plugfolder "+plugfolder);
-            new File(plugfolder).mkdir();
-            Enumeration e = zipFile.entries();
-            while(e.hasMoreElements()) {
-                ZipEntry zipEntry = (ZipEntry)e.nextElement();
-                File destpath = new File(plugfolder,zipEntry.getName());
-                destpath.getParentFile().mkdirs();
-                if(zipEntry.isDirectory()) {
-                    continue;
-                }
-                else {
-                    
-                    if(zipEntry.getName().endsWith(".jar")) {
-                        myjar = destpath.getAbsolutePath();
+            if(!new File(plugfolder).isDirectory()) {
+                new File(plugfolder).mkdir();
+                Enumeration e = zipFile.entries();
+                while(e.hasMoreElements()) {
+                    ZipEntry zipEntry = (ZipEntry)e.nextElement();
+                    File destpath = new File(plugfolder,zipEntry.getName());
+                    destpath.getParentFile().mkdirs();
+                    if(zipEntry.isDirectory()) {
+                        continue;
                     }
-                        
-                    BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(zipEntry));
-                    int b;
-                    byte buffer[] = new byte[1024];
-                    FileOutputStream fout = new FileOutputStream(destpath);
-                    BufferedOutputStream bout = new BufferedOutputStream(fout,1024);
-                    while ((b = bis.read(buffer, 0, 1024)) != -1) {
-                        bout.write(buffer, 0, b);
+                    else {
+                        if(zipEntry.getName().endsWith(".jar")) {
+                            myjar = destpath.getAbsolutePath();
+                        }
+                        BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(zipEntry));
+                        int b;
+                        byte buffer[] = new byte[1024];
+                        FileOutputStream fout = new FileOutputStream(destpath);
+                        BufferedOutputStream bout = new BufferedOutputStream(fout,1024);
+                        while ((b = bis.read(buffer, 0, 1024)) != -1) {
+                            bout.write(buffer, 0, b);
+                        }
+                        bout.flush();
+                        bout.close();
+                        bis.close();
                     }
-                    bout.flush();
-                    bout.close();
-                    bis.close();
                 }
+            }
+            else {
+                throw new PluginException(PluginException.installed);
             }
         } catch (IOException ex) {
             Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return myjar;
+        
+        pluginSettings.setJarname(myjar);
     }
-    
+
+    private static void readxmlSettings(PluginSettings pluginSettings) {
+
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+            Document doc = documentBuilder.parse(new File(pluginSettings.getPath()+"/settings.xml"));
+            doc.getDocumentElement().normalize();
+        
+            pluginSettings.setType(doc.getElementsByTagName("type").item(0).getTextContent());
+            pluginSettings.setMainclass(doc.getElementsByTagName("mainclass").item(0).getTextContent());
+        } catch (SAXException ex) {
+            Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
 }

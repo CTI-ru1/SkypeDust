@@ -23,6 +23,7 @@ public class CommandListener {
         commandcons.addAll(Arrays.asList(contacts));
         
         uberClient = new UberClient("http://uberdust.cti.gr/rest/testbed/1");
+        //uberClient = new UberClient("http://pspace.dyndns.org:8080/uberdust/rest/testbed/2");
     }
     
     public String messageParse(String author,String Body){    
@@ -33,8 +34,9 @@ public class CommandListener {
             String[] commands = Body.split(" ");
             if(commands.length==4){
             
-                if(("node".equals(commands[0]))&("temperature".equals(commands[1]))&("set".equals(commands[2]))){
-                    toret = "setting the node temperature";
+                if(commands[0].equals("node")) {
+
+                    toret = uberClient.setTonodecapability(commands[1],commands[2],commands[3]);
                 }
 
             }
@@ -42,52 +44,11 @@ public class CommandListener {
 
                 if("node".equals(commands[0])){
                     switch(commands[2]){
-                        case "parking":
+                        case "capabilities":
+                            toret = uberClient.getnodeCapabilities(commands[1]);
                             break;
-                        case "noise":
-                            break;
-                        case "light":
-                            System.out.println("Loading");
-                            toret = uberClient.getnodeLight(commands[1],1);
-                            break;
-                        case "temperature":
-                            toret = uberClient.getnodeTemperature(commands[1],1);
-                            break;
-                        case "pir":
-                            break;
-                        case "barometricpressure":
-                            break;
-                        case "humidity":
-                            break;
-                        case "ir":
-                            break;
-                        case "batterycharge":
-                            break;
-                        case "co":
-                            break;
-                        case "co2":
-                            break;
-                        case "ch4":
-                            break;
-                        case "light4":
-                            break;
-                        case "light2":
-                            break;
-                        case "light1":
-                            break;
-                        case "pressure":
-                            break;
-                        case "lockScreen":
-                            break;
-                        case "status":
-                            break;
-                        case "status1":
-                            break;
-                        case "command":
-                            break;
-                        case "operation":
-                            break;
-                        case "payload":
+                        default:
+                            toret = uberClient.getnodeCapability(commands[1],commands[2],1);
                             break;
                     }
                 }
@@ -129,9 +90,7 @@ public class CommandListener {
                                 toret = uberClient.listCapabilities();
                                 break;
                         }
-                        break;
-                    case "node":
-                        break;
+                        break;                    
                 }
             }
             else if(commands.length==1){

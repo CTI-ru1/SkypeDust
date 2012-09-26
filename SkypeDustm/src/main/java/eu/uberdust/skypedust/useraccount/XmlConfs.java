@@ -71,6 +71,14 @@ public class XmlConfs {
         return userSettings;
     }
     
+    public void writeServerSettings(String servverconf,String url) {
+    
+    }
+    
+    public String readServerSettings(String serverconf) {
+        return null;
+    }
+    
     public ArrayList readuAllowedContacts(String allowedConFile,String username){
         
         ArrayList allowedContacts = new ArrayList();
