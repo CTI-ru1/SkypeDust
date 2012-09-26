@@ -7,6 +7,7 @@ package eu.uberdust.skypedust.connectivity;
 import com.skype.api.Conversation;
 import com.skype.api.Message;
 import eu.uberdust.skypedust.LogFiles;
+import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import eu.uberdust.skypedust.util.JavaTutorialListeners;
 import eu.uberdust.skypedust.util.MySession;
 import java.text.DateFormat;
@@ -19,14 +20,14 @@ import java.util.Date;
  */
 public class SkypeDustListeners extends JavaTutorialListeners {
 
-    private CommandListener commandListener;    
+    private RequestHanlder requestHanlder;    
     
     public SkypeDustListeners(MySession mySession){
         super(mySession);        
     }
     
-    public void setcommandListener(CommandListener commandListener){
-        this.commandListener = commandListener;
+    public void setcommandListener(RequestHanlder commandListener){
+        this.requestHanlder = commandListener;
     }
     
     public void OnMessage(Message message,
@@ -46,8 +47,8 @@ public class SkypeDustListeners extends JavaTutorialListeners {
                        "Text "+msgBody);
                 LogFiles.writeMessageLog(msgAuthor,msgBody);                
                 Calendar targetDate = Calendar.getInstance();
-                if(commandListener!=null){
-                    reply = commandListener.messageParse(msgAuthor, msgBody);
+                if(requestHanlder!=null){
+                    reply = requestHanlder.inputParse(msgAuthor, msgBody);
                 }
                 else{
                     reply = "SkypeDust service not initialized properly";

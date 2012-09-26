@@ -61,7 +61,8 @@ public class SkypedustCmd {
     
     private String cmdTurnon() {
         
-        userAccount.initSaccount(null);
+        //userAccount.initSaccount(null);
+        userAccount.initSaccount();
         return null;
     }
     

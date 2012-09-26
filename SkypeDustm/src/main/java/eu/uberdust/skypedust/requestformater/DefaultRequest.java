@@ -4,7 +4,8 @@
  */
 package eu.uberdust.skypedust.requestformater;
 
-import eu.uberdust.skypedust.connectivity.UberClient;
+import eu.uberdust.skypedust.connectivity.RestfullClient;
+import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,28 +13,41 @@ import java.util.List;
  *
  * @author Gkatziouras Emmanouil (gkatzioura)
  */
-public class DefaultRequest implements RequestInterface {
+public abstract class DefaultRequest implements RequestHanlder {
 
     private List<String> commandcons;
-    private UberClient uberClient;
+    private RestfullClient uberClient;
+    private SkypedustWebSocket skypedustWebSocket;
+    
+    public void setCommandCons(ArrayList<String> CommandCons) {
+        this.commandcons = CommandCons;
+    }
+
+    public void setCommandCons(String[] CommandCons) {
+    }
     
     @Override
-    public void setCommandCons(ArrayList<String> CommandCons) {
-        this.commandcons = commandcons;
-        uberClient = new UberClient("http://uberdust.cti.gr/rest/testbed/1");        
+    public void setUberClient(RestfullClient uberClient1) {
+        uberClient = uberClient1;
     }
 
     @Override
-    public String uberRequest(String author, String body) {
-
+    public void setWebsocketClient(SkypedustWebSocket skypedustWebSocket1) {
+        skypedustWebSocket = skypedustWebSocket1;
+    }
+    
+    @Override
+    public String inputParse(String author, String body) {
+        
         if(commandcons.contains(author))
         {
             String toret = "Unregognized command please type help to see your options";            
             String[] commands = body.split(" ");
             if(commands.length==4){
             
-                if(("node".equals(commands[0]))&("temperature".equals(commands[1]))&("set".equals(commands[2]))){
-                    toret = "setting the node temperature";
+                if(commands[0].equals("node")) {
+
+                    toret = uberClient.setTonodecapability(commands[1],commands[2],commands[3]);
                 }
 
             }
@@ -41,52 +55,11 @@ public class DefaultRequest implements RequestInterface {
 
                 if("node".equals(commands[0])){
                     switch(commands[2]){
-                        case "parking":
+                        case "capabilities":
+                            toret = uberClient.getnodeCapabilities(commands[1]);
                             break;
-                        case "noise":
-                            break;
-                        case "light":
-                            System.out.println("Loading");
-                            toret = uberClient.getnodeLight(commands[1],1);
-                            break;
-                        case "temperature":
-                            toret = uberClient.getnodeTemperature(commands[1],1);
-                            break;
-                        case "pir":
-                            break;
-                        case "barometricpressure":
-                            break;
-                        case "humidity":
-                            break;
-                        case "ir":
-                            break;
-                        case "batterycharge":
-                            break;
-                        case "co":
-                            break;
-                        case "co2":
-                            break;
-                        case "ch4":
-                            break;
-                        case "light4":
-                            break;
-                        case "light2":
-                            break;
-                        case "light1":
-                            break;
-                        case "pressure":
-                            break;
-                        case "lockScreen":
-                            break;
-                        case "status":
-                            break;
-                        case "status1":
-                            break;
-                        case "command":
-                            break;
-                        case "operation":
-                            break;
-                        case "payload":
+                        default:
+                            toret = uberClient.getnodeCapability(commands[1],commands[2],1);
                             break;
                     }
                 }
@@ -128,13 +101,13 @@ public class DefaultRequest implements RequestInterface {
                                 toret = uberClient.listCapabilities();
                                 break;
                         }
-                        break;
-                    case "node":
-                        break;
+                        break;                    
                 }
             }
             else if(commands.length==1){
                 switch (commands[0]){
+                    case "websocket":
+                        System.out.println("testing web socket");
                     case "help":
                         toret = "SkypeDust 1.01\n"+
                         "help: without arguments displays an intro message and displays a list with commands that help getting started."+
@@ -167,6 +140,6 @@ public class DefaultRequest implements RequestInterface {
         else{
             return "No authorized user";        
         }        
-    }
-    
+    }    
+
 }

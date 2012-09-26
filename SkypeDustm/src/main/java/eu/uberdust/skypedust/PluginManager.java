@@ -6,7 +6,7 @@ package eu.uberdust.skypedust;
 
 import eu.uberdust.skypedust.pojos.PluginSettings;
 import eu.uberdust.skypedust.requestformater.DefaultRequest;
-import eu.uberdust.skypedust.requestformater.RequestInterface;
+import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -72,7 +72,7 @@ public class PluginManager {
         return null;
     }
     
-    public static RequestInterface selectFormatter(String path) throws PluginException {
+    public static RequestHanlder selectFormatter(String path) throws PluginException {
     
         PluginSettings pluginSettings = new PluginSettings();
         pluginSettings.setPath(path);
@@ -93,8 +93,8 @@ public class PluginManager {
         
             if(class1!=null) {
                 try {
-                    RequestInterface reqInterface = (RequestInterface) class1.newInstance();
-                    System.out.println(reqInterface.uberRequest("",""));
+                    RequestHanlder reqInterface = (RequestHanlder) class1.newInstance();
+                    //System.out.println(reqInterface.uberRequest("",""));
                     return reqInterface;
                 } catch (InstantiationException ex) {
                     Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);

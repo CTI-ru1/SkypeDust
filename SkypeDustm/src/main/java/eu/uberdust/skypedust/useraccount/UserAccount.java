@@ -8,9 +8,10 @@ import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 import eu.uberdust.skypedust.FileManage;
 import eu.uberdust.skypedust.LogFiles;
 import eu.uberdust.skypedust.appkeypair.AppKeyPairMgr;
-import eu.uberdust.skypedust.connectivity.CommandListener;
+import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
 import eu.uberdust.skypedust.connectivity.VoipListener;
 import eu.uberdust.skypedust.pojos.UserSettings;
+import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import eu.uberdust.skypedust.ui.SkypeDustApp;
 import eu.uberdust.skypedust.util.MySession;
 import java.io.*;
@@ -18,6 +19,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -33,7 +35,7 @@ import sun.misc.BASE64Encoder;
  */
 public class UserAccount {
 
-    private static AppKeyPairMgr appKeyPairMgr = new AppKeyPairMgr();
+    private static AppKeyPairMgr appKeyPairMgr;
     private static MySession mySession = new MySession();
     public static final String noContacts = "No Contacts";
     private static final String algo = "AES";
@@ -42,8 +44,9 @@ public class UserAccount {
     FileManage fileManage = new FileManage();
     public UserSettings userSettings;
     private XmlConfs xmlConfs;
-    private CommandListener cmdListener;
+    private RequestHanlder cmdListener;
     private VoipListener voipListener;
+    private SkypedustWebSocket skypedustWebSocket;
     
     public UserAccount(){
             xmlConfs = new XmlConfs();
@@ -58,6 +61,16 @@ public class UserAccount {
         storeEncrypted(password);
     }
     
+    public void setCommandListener(RequestHanlder commandListener) {
+        this.cmdListener = commandListener;
+        cmdListener.setCommandCons(getAllowedContacts());
+        mySession.myJavaTutorialListeners.setcommandListener(cmdListener);
+    }
+    
+    public void setVoipListener(VoipListener voipListener) {
+        this.voipListener = voipListener;
+    }
+        
     private void storeEncrypted(String password) {
         
         try {
@@ -101,7 +114,7 @@ public class UserAccount {
         return password;
     }
     
-    public void initSaccount(SkypeDustApp skypeDustView){
+    public void initSaccount(){
         
         try {
             startRuntime();
@@ -118,6 +131,7 @@ public class UserAccount {
 
     private void setKeypair() throws UserException {
      
+        appKeyPairMgr = new AppKeyPairMgr();
         if(!appKeyPairMgr.setAppKeyPairFromFile())
             throw new UserException(UserException.KeypairProblem);
     }
@@ -128,27 +142,29 @@ public class UserAccount {
         if(!mySession.mySignInMgr.Login(null, mySession,userSettings.getPassword().toString()))
             throw new UserException(UserException.WrongCredentials);
     }    
-
-    public void startListener() {
-    
-        cmdListener = new CommandListener(getAllowedContacts());
-        mySession.myJavaTutorialListeners.setcommandListener(cmdListener);
-    }
     
     public String[] getAllowedContacts(){
-            
+        
         ArrayList allowedContacts = xmlConfs.readuAllowedContacts(
                 fileManage.dpath+FileManage.AllowedContactsFile,
                 userSettings.getUsername());
-        if(allowedContacts.isEmpty()){
-            allowedContacts.add(noContacts);
+
+        if(allowedContacts!=null) {
+
+            if(allowedContacts.isEmpty()){
+                allowedContacts.add(noContacts);
+            }
+            
+            String[] toallowedlist = new String[allowedContacts.size()];
+            for(int i=0;i<allowedContacts.size();i++)
+                toallowedlist[i]=allowedContacts.get(i).toString();
+            
+            return toallowedlist;
+        
         }
-            
-        String[] toallowedlist = new String[allowedContacts.size()];
-        for(int i=0;i<allowedContacts.size();i++)
-            toallowedlist[i]=allowedContacts.get(i).toString();
-            
-        return toallowedlist;
+        else {
+            return new String[] {noContacts};
+        }
     }
     
     private void startRuntime() throws UserException {
@@ -179,4 +195,10 @@ public class UserAccount {
                 userSettings.getUsername());
     }
     
+    public void datatoUi() {
+    }
+    
+    public MySession getSession() {
+        return mySession;
+    }
 }

@@ -8,6 +8,7 @@ import eu.uberdust.skypedust.FileManage;
 import eu.uberdust.skypedust.LogFiles;
 import eu.uberdust.skypedust.PluginException;
 import eu.uberdust.skypedust.PluginManager;
+import eu.uberdust.skypedust.SkypeDustManager;
 import eu.uberdust.skypedust.useraccount.UserAccount;
 import java.awt.CardLayout;
 import java.awt.event.WindowEvent;
@@ -17,10 +18,12 @@ import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
 import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
 import eu.uberdust.skypedust.pojos.PluginSettings;
-import eu.uberdust.skypedust.requestformater.RequestInterface;
+import eu.uberdust.skypedust.requestformater.RequestHanlder;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.ListModel;
 
 /**
  *
@@ -28,19 +31,27 @@ import javax.swing.JFileChooser;
  */
 public class SkypeDustApp extends javax.swing.JFrame {
 
+    private SkypeDustManager skypeDustManager;
+    
     /**
      * Creates new form SkypeDustApp
      */
     public SkypeDustApp() {
         initComponents();
-        userAccount = new UserAccount();
+        
+        skypeDustManager = new SkypeDustManager();
+        
+        userAccount = skypeDustManager.getUserAccount();
+       
         if(userAccount.userSettings!=null){
             usernameTextField.setText(userAccount.userSettings.getUsername());
             nicknameTextField.setText(userAccount.userSettings.getNickname());
             passwordPasswordField.setText(userAccount.userSettings.getPassword());
         }
-        userAccount.initSaccount(this);
-        userAccount.startListener();
+        //userAccount.initSaccount(this);
+        
+        //userAccount.startListener();
+        
         this.addWindowListener(winlistener);
         //SkypedustWebSocket.getInstance().getUpdate("urn:test:0x1","light");
     }
@@ -192,6 +203,11 @@ public class SkypeDustApp extends javax.swing.JFrame {
         contactTextField.setText("Skype Contact");
 
         jButton2.setText("Add");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel7.setText("Drag and Drop to allow Contacts ");
 
@@ -576,10 +592,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        userAccount.setAccount(
-                usernameTextField.getText(),
-                nicknameTextField.getText(),
-                passwordPasswordField.getText());
+        skypeDustManager.setUserAccount(usernameTextField.getText(),nicknameTextField.getText(),passwordPasswordField.getText());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -624,6 +637,16 @@ public class SkypeDustApp extends javax.swing.JFrame {
             System.out.println("no matched");
         }
     }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        contactTextField.getText();
+        DefaultListModel model = (DefaultListModel) contactsjList.getModel();
+        if(!model.contains(contactTextField.getText())) {
+            model.addElement(contactTextField.getText());
+        }
+        contactsjList.setModel(model);
+        skypeDustManager.setAllowedContacts(Arrays.copyOf(model.toArray(), model.toArray().length, String[].class));
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     private void cardSwitcher(String card){
         CardLayout cardLayout = (CardLayout)(mainPanel.getLayout());

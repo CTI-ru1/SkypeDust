@@ -4,39 +4,63 @@
  */
 package eu.uberdust.skypedust.connectivity;
 
+import com.skype.api.Sms;
+import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import eu.uberdust.skypedust.requestformater.DefaultRequest;
 
 /**
  *
  * @author Gkatziouras Emmanouil (gkatzioura)
  */
-public class CommandListener {
+public class CommandListener implements RequestHanlder {
 
-    private List<String> commandcons;
-    private UberClient uberClient;
-    
-    public CommandListener(String[] contacts){
+    private ArrayList<String> commandcons;
+    private RestfullClient uberClient;
+    private SkypedustWebSocket skypedustWebSocket;
+    private RequestHanlder skypedustRequest;
+    private SkypeMessenger skypeMessenger;
+
+    public void setCommandCons(String[] contacts) {
         
         commandcons = new ArrayList<>();
         commandcons.addAll(Arrays.asList(contacts));
-        
-        uberClient = new UberClient("http://uberdust.cti.gr/rest/testbed/1");
-        //uberClient = new UberClient("http://pspace.dyndns.org:8080/uberdust/rest/testbed/2");
+        //skypedustRequest.setCommandCons(commandcons);
     }
     
-    public String messageParse(String author,String Body){    
+    public void setSkypedustRequest(RequestHanlder skypedustRequest1){
         
+        skypedustRequest = skypedustRequest1;
+    }
+    
+    public void setCommandCons(ArrayList<String> CommandCons) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setUberClient(RestfullClient uberClient) {
+        this.uberClient = uberClient;
+    }
+
+    public void setWebsocketClient(SkypedustWebSocket skypedustWebSocket) {
+        this.skypedustWebSocket = skypedustWebSocket;
+    }
+
+    public String inputParse(String author, String body) {
         if(commandcons.contains(author))
         {
             String toret = "Unregognized command please type help to see your options";            
-            String[] commands = Body.split(" ");
+            String[] commands = body.split(" ");
             if(commands.length==4){
             
                 if(commands[0].equals("node")) {
 
                     toret = uberClient.setTonodecapability(commands[1],commands[2],commands[3]);
+                }
+                
+                if(commands[0].equals("websocket")&commands[1].equals("node")) {
+                    skypedustWebSocket.subscribeUpdate(commands[2],commands[3]);
                 }
 
             }
@@ -95,6 +119,9 @@ public class CommandListener {
             }
             else if(commands.length==1){
                 switch (commands[0]){
+                    case "websocket":
+                        System.out.println("testing web socket");
+                        skypeMessenger.sendMessage(new String[] {author},"sdasdadas");
                     case "help":
                         toret = "SkypeDust 1.01\n"+
                         "help: without arguments displays an intro message and displays a list with commands that help getting started."+
@@ -127,5 +154,10 @@ public class CommandListener {
         else{
             return "No authorized user";        
         }
+    }
+
+    @Override
+    public void setSkypeMessenger(SkypeMessenger skypeMessenger) {
+        this.skypeMessenger = skypeMessenger;
     }
 }
