@@ -79,6 +79,18 @@ public class XmlConfs {
         return null;
     }
     
+    public void writeNodeDictionary() {
+    
+    }
+    
+    public void addtoNodeDictionary() {
+    
+    }
+    
+    public String[] readNodeDictionary() {
+        return null;
+    }
+    
     public ArrayList readuAllowedContacts(String allowedConFile,String username){
         
         ArrayList allowedContacts = new ArrayList();

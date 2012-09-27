@@ -55,6 +55,7 @@ public class RestfullClient extends UberdustClient{
     
     public String listNodes(){
         try {
+            System.out.println(uberurl.toString()+nodels);
             HttpGet httpGet = new HttpGet(uberurl.toString()+nodels);
             HttpResponse httpResponse = httpClient.execute(httpGet);
             HttpEntity httpEntity = httpResponse.getEntity();

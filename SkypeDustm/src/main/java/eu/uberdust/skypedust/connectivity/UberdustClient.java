@@ -9,6 +9,16 @@ package eu.uberdust.skypedust.connectivity;
  * @author carnage
  */
 public abstract class UberdustClient {
+
+    protected SkypeMessenger skypeMessenger;
+
+    public SkypeMessenger getSkypeMessenger() {
+        return skypeMessenger;
+    }
+
+    public void setSkypeMessenger(SkypeMessenger skypeMessenger) {
+        this.skypeMessenger = skypeMessenger;
+    }    
     
     protected String getcapabilityName(String capability) {
     

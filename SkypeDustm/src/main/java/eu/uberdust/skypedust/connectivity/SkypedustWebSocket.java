@@ -6,11 +6,15 @@ package eu.uberdust.skypedust.connectivity;
 
 import eu.uberdust.communication.protobuf.Message;
 import eu.uberdust.communication.websocket.readings.WSReadingsClient;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
 
 /**
  *
@@ -19,8 +23,7 @@ import java.util.logging.Logger;
 public class SkypedustWebSocket extends UberdustClient implements Observer {
 
     private static SkypedustWebSocket instance = null;
-    //private static final String webSocketread = "ws://carrot.cti.gr:8080/uberdust/readings.ws";
-    
+
     public static SkypedustWebSocket getInstance(String webSocketread) {
         synchronized (SkypedustWebSocket.class) {
             if(instance == null) {
@@ -34,8 +37,9 @@ public class SkypedustWebSocket extends UberdustClient implements Observer {
     private SkypedustWebSocket() {
     }
 
-    public void subscribeUpdate(String node,String capability) {
-        WSReadingsClient.getInstance().subscribe(node, capability);
+    public void subscribeUpdate(String contact,String node,String capability) {
+                        
+        WSReadingsClient.getInstance().subscribe(node, getcapabilityName(capability));
         WSReadingsClient.getInstance().addObserver(this);
     }
     
@@ -45,9 +49,15 @@ public class SkypedustWebSocket extends UberdustClient implements Observer {
             return;
         }
         
+        System.out.println("Got Websocket Message");
+        
         if( arg instanceof Message.NodeReadings) {
             Message.NodeReadings reading =(Message.NodeReadings)arg;
-            System.out.println("websocket: "+reading.getReading(0).getNode());
+            
+            String key = reading.getReading(0).getNode()+"@"+reading.getReading(0).getCapability();
+            System.out.println(key);
+            
+            skypeMessenger.sendMessage(new String[] {"mangkatz"}, key);
         }
     }
 }

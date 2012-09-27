@@ -5,7 +5,6 @@
 package eu.uberdust.skypedust;
 
 import eu.uberdust.skypedust.pojos.PluginSettings;
-import eu.uberdust.skypedust.requestformater.DefaultRequest;
 import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -203,7 +202,6 @@ public class PluginManager {
             Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        }        
     }
 }

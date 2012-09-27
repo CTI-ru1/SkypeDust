@@ -2,9 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package eu.uberdust.skypedust.connectivity;
+package eu.uberdust.skypedust.requestformater;
 
 import com.skype.api.Sms;
+import eu.uberdust.skypedust.connectivity.RestfullClient;
+import eu.uberdust.skypedust.connectivity.SkypeMessenger;
+import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
 import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,10 +44,12 @@ public class CommandListener implements RequestHanlder {
 
     public void setUberClient(RestfullClient uberClient) {
         this.uberClient = uberClient;
+        this.uberClient.setSkypeMessenger(skypeMessenger);
     }
 
     public void setWebsocketClient(SkypedustWebSocket skypedustWebSocket) {
         this.skypedustWebSocket = skypedustWebSocket;
+        this.skypedustWebSocket.setSkypeMessenger(skypeMessenger);
     }
 
     public String inputParse(String author, String body) {
@@ -60,7 +65,7 @@ public class CommandListener implements RequestHanlder {
                 }
                 
                 if(commands[0].equals("websocket")&commands[1].equals("node")) {
-                    skypedustWebSocket.subscribeUpdate(commands[2],commands[3]);
+                    skypedustWebSocket.subscribeUpdate(author,commands[2],commands[3]);
                 }
 
             }

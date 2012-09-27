@@ -19,7 +19,9 @@ import javax.swing.table.DefaultTableModel;
 import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
 import eu.uberdust.skypedust.pojos.PluginSettings;
 import eu.uberdust.skypedust.requestformater.RequestHanlder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -40,20 +42,16 @@ public class SkypeDustApp extends javax.swing.JFrame {
         initComponents();
         
         skypeDustManager = new SkypeDustManager();
-        
         userAccount = skypeDustManager.getUserAccount();
        
         if(userAccount.userSettings!=null){
             usernameTextField.setText(userAccount.userSettings.getUsername());
             nicknameTextField.setText(userAccount.userSettings.getNickname());
             passwordPasswordField.setText(userAccount.userSettings.getPassword());
+            //setContactList(skypeDustManager.getAccountContacts());
+            //setAllowedList(skypeDustManager.getAllowedContacts());
         }
-        //userAccount.initSaccount(this);
-        
-        //userAccount.startListener();
-        
         this.addWindowListener(winlistener);
-        //SkypedustWebSocket.getInstance().getUpdate("urn:test:0x1","light");
     }
     
     //@Override
@@ -80,16 +78,12 @@ public class SkypeDustApp extends javax.swing.JFrame {
         skypeFriendPanel = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        contactTextField = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        jButton10 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        model = new DefaultListModel();
-        contactsjList = new javax.swing.JList();
+        jList1 = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
-        concommandsjList = new javax.swing.JList();
+        jList2 = new javax.swing.JList();
         skypeMessagePanel1 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -99,6 +93,9 @@ public class SkypeDustApp extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         jButton9 = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jButton11 = new javax.swing.JButton();
         pluginsPanel = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
@@ -112,6 +109,15 @@ public class SkypeDustApp extends javax.swing.JFrame {
         jTable3 = new javax.swing.JTable();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
+        nodePanel = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jTable4 = new javax.swing.JTable();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
+        jTextField4 = new javax.swing.JTextField();
+        jButton12 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -121,6 +127,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
@@ -187,7 +194,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(passwordPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 186, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addGap(32, 32, 32))
         );
@@ -198,50 +205,42 @@ public class SkypeDustApp extends javax.swing.JFrame {
 
         jLabel5.setText("Allowed to issue commands");
 
-        jLabel6.setText("Add Contact");
-
-        contactTextField.setText("Skype Contact");
-
-        jButton2.setText("Add");
+        jButton2.setText("To Allowed");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
 
-        jLabel7.setText("Drag and Drop to allow Contacts ");
+        jButton10.setText("Remove");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
 
-        jLabel8.setText("to issue commands");
+        jList1.setModel(contactsModel);
+        jScrollPane1.setViewportView(jList1);
 
-        contactsjList.setModel(model);
-        jScrollPane1.setViewportView(contactsjList);
-
-        concommandsjList.setModel(model);
-        jScrollPane2.setViewportView(concommandsjList);
+        jList2.setModel(allowedModel);
+        jScrollPane2.setViewportView(jList2);
 
         javax.swing.GroupLayout skypeFriendPanelLayout = new javax.swing.GroupLayout(skypeFriendPanel);
         skypeFriendPanel.setLayout(skypeFriendPanelLayout);
         skypeFriendPanelLayout.setHorizontalGroup(
             skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(skypeFriendPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(skypeFriendPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(contactTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel4)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
+                .addGap(24, 24, 24)
                 .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel8))
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel5))
-                .addGap(21, 21, 21))
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5)
+                    .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(33, 33, 33))
         );
         skypeFriendPanelLayout.setVerticalGroup(
             skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -252,18 +251,13 @@ public class SkypeDustApp extends javax.swing.JFrame {
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
-                .addGap(18, 18, 18)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(85, 85, 85)
                 .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(contactTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2)
-                    .addComponent(jLabel8))
-                .addContainerGap(82, Short.MAX_VALUE))
+                    .addComponent(jButton10))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
 
         mainPanel.add(skypeFriendPanel, "card3");
@@ -294,7 +288,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(124, Short.MAX_VALUE))
+                .addContainerGap(147, Short.MAX_VALUE))
         );
 
         mainPanel.add(skypeMessagePanel1, "card4");
@@ -317,6 +311,11 @@ public class SkypeDustApp extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setText("Websockets Url");
+
+        jButton11.setText("Set Url");
+        jButton11.setToolTipText("");
+
         javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
         settingsPanel.setLayout(settingsPanelLayout);
         settingsPanelLayout.setHorizontalGroup(
@@ -324,12 +323,17 @@ public class SkypeDustApp extends javax.swing.JFrame {
             .addGroup(settingsPanelLayout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6)
                     .addComponent(jLabel11)
+                    .addComponent(asyncmsgCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE))
                         .addGap(30, 30, 30)
-                        .addComponent(jButton9))
-                    .addComponent(asyncmsgCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(67, Short.MAX_VALUE))
         );
         settingsPanelLayout.setVerticalGroup(
@@ -341,9 +345,15 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton9))
-                .addGap(31, 31, 31)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel6)
+                .addGap(18, 18, 18)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton11))
+                .addGap(27, 27, 27)
                 .addComponent(asyncmsgCheckBox)
-                .addContainerGap(203, Short.MAX_VALUE))
+                .addContainerGap(156, Short.MAX_VALUE))
         );
 
         mainPanel.add(settingsPanel, "card5");
@@ -445,10 +455,94 @@ public class SkypeDustApp extends javax.swing.JFrame {
                         .addGap(9, 9, 9)
                         .addComponent(jButton8))
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
 
         mainPanel.add(pluginsPanel, "card6");
+
+        nodePanel.setName("card5"); // NOI18N
+
+        jTable4.setModel(nodetableModel);
+        jTable4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable4MouseClicked(evt);
+            }
+        });
+        jTable4.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTable4FocusGained(evt);
+            }
+        });
+        jScrollPane6.setViewportView(jTable4);
+
+        jLabel7.setText("Node name");
+
+        jLabel8.setText("Command name");
+
+        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField3ActionPerformed(evt);
+            }
+        });
+
+        jButton12.setText("Remove");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+
+        jButton13.setText("Add/Update");
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout nodePanelLayout = new javax.swing.GroupLayout(nodePanel);
+        nodePanel.setLayout(nodePanelLayout);
+        nodePanelLayout.setHorizontalGroup(
+            nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(nodePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+                    .addGroup(nodePanelLayout.createSequentialGroup()
+                        .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel8))
+                        .addGap(46, 46, 46)
+                        .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(nodePanelLayout.createSequentialGroup()
+                                .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(34, 34, 34)
+                                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jTextField4)
+                            .addComponent(jTextField3))))
+                .addContainerGap())
+        );
+        nodePanelLayout.setVerticalGroup(
+            nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(nodePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addGap(18, 18, 18)
+                .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton12)
+                    .addComponent(jButton13))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
+        mainPanel.add(nodePanel, "card5");
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -503,6 +597,14 @@ public class SkypeDustApp extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem2);
 
+        jMenuItem4.setText("Node Dictionary");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem4);
+
         menuBar.add(jMenu1);
 
         jMenu2.setText("Plugins");
@@ -543,7 +645,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 332, Short.MAX_VALUE)
+            .addGap(0, 355, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -639,14 +741,92 @@ public class SkypeDustApp extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        contactTextField.getText();
-        DefaultListModel model = (DefaultListModel) contactsjList.getModel();
-        if(!model.contains(contactTextField.getText())) {
-            model.addElement(contactTextField.getText());
+        
+        int i = jList1.getSelectedIndex();
+        String contact = (String)contactsModel.getElementAt(i);
+        if(!allowedModel.contains(contact)) {
+            allowedModel.addElement(contact);
+            skypeDustManager.setAllowedContact(contact);
+            if(allowedModel.contains("No Contacts")) {
+                allowedModel.removeElement("No Contacts");
+                skypeDustManager.removeAllowedContact("No Contacts");
+            }
         }
-        contactsjList.setModel(model);
-        skypeDustManager.setAllowedContacts(Arrays.copyOf(model.toArray(), model.toArray().length, String[].class));
+        else {
+            System.out.println("It's in");
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        int i = jList2.getSelectedIndex();
+        String contact = (String) allowedModel.get(i);
+        allowedModel.remove(i);
+        skypeDustManager.removeAllowedContact(contact);
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        cardSwitcher("card5");
+        //nodetableModel.
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+        /*
+        String node = jTextField3.getText();
+        String commandname = jTextField4.getText();
+        
+        int position =-1;
+        boolean exists = false;
+        for(int i=0;i<nodetableModel.getRowCount();i++) {
+            
+            if(nodetableModel.getValueAt(i,0)==node) {
+                position = i;
+                nodetableModel.setValueAt(commandname, i, 1);
+            }
+        }
+        
+        if(position==-1) {
+            nodetableModel.addRow(new String[] {node,commandname});
+        }*/
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        int i = jTable4.getSelectedRow();
+        nodetableModel.removeRow(i);
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jTable4FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable4FocusGained
+
+    }//GEN-LAST:event_jTable4FocusGained
+
+    private void jTable4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable4MouseClicked
+        System.out.println(Integer.toString(jTable4.getSelectedRow()));
+    }//GEN-LAST:event_jTable4MouseClicked
+
+    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        
+    }//GEN-LAST:event_jTextField3ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        
+        String node = jTextField3.getText();
+        String commandname = jTextField4.getText();
+        
+        int position =-1;
+        for(int i=0;i<nodetableModel.getRowCount();i++) {
+            
+            System.out.println(nodetableModel.getValueAt(i, 0));
+            if(((String)nodetableModel.getValueAt(i,0)).equals(node)) {
+                position = i;
+            }
+        }
+        
+        System.out.println(Integer.toString(position));
+        
+        if(position==-1) {
+            System.out.println("Add");
+            nodetableModel.addRow(new String[] {node,commandname});
+        }
+        else {
+            System.out.println("Exists");
+            nodetableModel.setValueAt(commandname,position,1);
+        }
+    }//GEN-LAST:event_jButton13ActionPerformed
 
     private void cardSwitcher(String card){
         CardLayout cardLayout = (CardLayout)(mainPanel.getLayout());
@@ -654,25 +834,26 @@ public class SkypeDustApp extends javax.swing.JFrame {
     }
     
     public void setContactList(String[] constring){
-
-        model = new DefaultListModel();
-        for(String i:constring)
-            model.addElement(i);
-        contactsjList.setModel(model);
-        jScrollPane1.getViewport().setView(contactsjList);
-            
+        
+        for(String contact:constring) {
+            contactsModel.addElement(contact);
+        }
     }
 
+    public String[] getContactList() {
+        return null;
+    }
+    
     public void setAllowedList(String[] allowedstring){
     
-        System.out.println("set Allowed Contacts List");
-        model = new DefaultListModel();
-        for(String i:allowedstring)
-            model.addElement(i);
-        
-        concommandsjList.setModel(model);
-        jScrollPane2.getViewport().setView(concommandsjList);     
+        for(String contact:allowedstring) {
+            allowedModel.addElement(contact);
+        }
     }    
+    
+    public String[] getAllowedList() {
+        return null;
+    }
     
     private WindowListener winlistener = new WindowListener() {
 
@@ -719,13 +900,14 @@ public class SkypeDustApp extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JCheckBox asyncmsgCheckBox;
-    private javax.swing.JList concommandsjList;
-    private javax.swing.JTextField contactTextField;
-    private javax.swing.JList contactsjList;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -746,23 +928,32 @@ public class SkypeDustApp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JList jList1;
+    private javax.swing.JList jList2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
+    private javax.swing.JTable jTable4;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JTextField nicknameTextField;
+    private javax.swing.JPanel nodePanel;
     private javax.swing.JPasswordField passwordPasswordField;
     private javax.swing.JPanel pluginsPanel;
     private javax.swing.JPanel settingsPanel;
@@ -781,5 +972,9 @@ public class SkypeDustApp extends javax.swing.JFrame {
     private DefaultListModel model = new DefaultListModel();
     private DefaultTableModel tableModel = new DefaultTableModel();
     private DefaultTableModel reqpluginModel = new DefaultTableModel();
+    private DefaultListModel contactsModel = new DefaultListModel();
+    private DefaultListModel allowedModel = new DefaultListModel();
+    private DefaultTableModel nodetableModel = new DefaultTableModel(
+            new Object [][] {},new String [] {"Node Name", "Command Name"});
     private boolean asyncmsg = false;
 }

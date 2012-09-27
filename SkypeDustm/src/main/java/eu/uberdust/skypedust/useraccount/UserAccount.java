@@ -4,6 +4,8 @@
  */
 package eu.uberdust.skypedust.useraccount;
 
+import com.skype.api.Contact;
+import com.skype.api.ContactGroup;
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 import eu.uberdust.skypedust.FileManage;
 import eu.uberdust.skypedust.LogFiles;
@@ -20,6 +22,7 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -59,6 +62,14 @@ public class UserAccount {
         System.out.println(username+"/"+nickname+"/"+password);
         xmlConfs.writeSettingsConf(fileManage.dpath+FileManage.SettingsFile, username, nickname,"nope");
         storeEncrypted(password);
+        userSettings.setUsername(username);
+        userSettings.setNickname(nickname);
+        userSettings.setNickname(password);
+    }
+    
+    public void logoutAccount() {
+        mySession.myAccount.Logout(true);
+        mySession.doTearDownSession();
     }
     
     public void setCommandListener(RequestHanlder commandListener) {
@@ -146,7 +157,7 @@ public class UserAccount {
     public String[] getAllowedContacts(){
         
         ArrayList allowedContacts = xmlConfs.readuAllowedContacts(
-                fileManage.dpath+FileManage.AllowedContactsFile,
+                fileManage.dpath+userSettings.getUsername()+"_"+FileManage.AllowedContactsFile,
                 userSettings.getUsername());
 
         if(allowedContacts!=null) {
@@ -163,7 +174,7 @@ public class UserAccount {
         
         }
         else {
-            return new String[] {noContacts};
+            return new String[] {"No Contacts"};
         }
     }
     
@@ -187,12 +198,38 @@ public class UserAccount {
         LogFiles.writeLoginLog(userSettings.getUsername(),1);
     }
     
+    public void saveAllowedContact(String contact) {
+        
+        List<String> contacts = new ArrayList<>(Arrays.asList(getAllowedContacts()));
+        contacts.add(contact);
+        saveAllowedContacts(contacts.toArray(new String[contacts.size()]));
+    }
+    
+    public void removeAllowedContact(String contact) {
+    
+        List<String> contacts = new ArrayList<>(Arrays.asList(getAllowedContacts()));
+        contacts.remove(contact);
+        saveAllowedContacts(contacts.toArray(new String[contacts.size()]));
+    }
+    
     public void saveAllowedContacts(String[] allowedContacts){
         
         System.out.println(new Integer(allowedContacts.length).toString());
-        xmlConfs.writeAllowedContacts(fileManage.dpath+FileManage.AllowedContactsFile,
+        xmlConfs.writeAllowedContacts(fileManage.dpath+userSettings.getUsername()+"_"+FileManage.AllowedContactsFile,
                 allowedContacts,
                 userSettings.getUsername());
+    }
+    
+    public String[] getAccountContacts() {
+    
+        Contact[] contacts = mySession.mySkype.GetHardwiredContactGroup(ContactGroup.TYPE.ALL_BUDDIES).GetContacts();
+        
+        String[] usernames = new String[contacts.length];
+        for(int i=0;i<contacts.length;i++) {
+            usernames[i] = contacts[i].GetIdentity();
+        }
+        
+        return usernames;
     }
     
     public void datatoUi() {
