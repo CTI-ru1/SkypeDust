@@ -87,5 +87,10 @@
       <artifactId>WebSocketsLibrary</artifactId>
       <version>1.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>10.9.1.0</version>
+    </dependency>
   </dependencies>
 </project>

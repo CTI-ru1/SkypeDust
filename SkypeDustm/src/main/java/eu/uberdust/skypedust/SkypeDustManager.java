@@ -24,17 +24,19 @@ public class SkypeDustManager {
     private UserAccount userAccount;
     private PluginManager pluginManager;
     private SkypeMessenger skypeMessenger;
+    private DataProvider dataProvider;
     
     public SkypeDustManager() {
         
-        
+        dataProvider = new DataProvider();
         userAccount = new UserAccount();
         
         userAccount.initSaccount();
         skypeMessenger = new SkypeMessenger(userAccount.getSession());
+        
         CommandListener commandListener = new CommandListener();
         commandListener.setSkypeMessenger(skypeMessenger);
-        commandListener.setCommandCons(userAccount.getAllowedContacts());
+        commandListener.setCommandCons(dataProvider.getAllowedContacts(userAccount.userSettings.getUsername()));
         commandListener.setUberClient(new RestfullClient("http://uberdust.cti.gr/rest/testbed/1"));
         commandListener.setWebsocketClient(SkypedustWebSocket.getInstance("ws://uberdust.cti.gr:80/readings.ws"));
         commandListener.setCommandCons(userAccount.getAllowedContacts());
@@ -54,6 +56,7 @@ public class SkypeDustManager {
 
         //userAccount.logoutAccount();
         userAccount.setAccount(username, nickname, password);
+        dataProvider.insertAccount(username);
         //userAccount.initSaccount();
         
         /*
@@ -65,11 +68,16 @@ public class SkypeDustManager {
     }
     
     public void setAllowedContact(String contact) {
-        userAccount.saveAllowedContact(contact);
+        dataProvider.insertAllowedContact(contact,userAccount.userSettings.getUsername());
     }
     
     public void removeAllowedContact(String contact) {
-        userAccount.removeAllowedContact(contact);
+        if(dataProvider.removeAllowedContact(userAccount.userSettings.getUsername(), contact)) {
+            System.out.println("Success");
+        }
+        else {
+            System.out.println("Fail");
+        }
     }
     
     public void setAllowedContacts(String[] allowedContacts) {
@@ -78,7 +86,7 @@ public class SkypeDustManager {
     
     public String[] getAllowedContacts() {
         
-        return userAccount.getAllowedContacts();
+        return dataProvider.getAllowedContacts(userAccount.userSettings.getUsername());
     }
     
     public String[] getAccountContacts() {
