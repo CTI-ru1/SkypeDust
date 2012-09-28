@@ -8,12 +8,14 @@ import eu.uberdust.skypedust.requestformater.CommandListener;
 import eu.uberdust.skypedust.connectivity.SkypeMessenger;
 import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
 import eu.uberdust.skypedust.connectivity.RestfullClient;
+import eu.uberdust.skypedust.pojos.NodeShortname;
 import eu.uberdust.skypedust.ui.ConlistHandler;
 import eu.uberdust.skypedust.useraccount.UserAccount;
 import eu.uberdust.skypedust.requestformater.DefaultRequest;
 import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -28,7 +30,6 @@ public class SkypeDustManager {
     
     public SkypeDustManager() {
         
-        dataProvider = new DataProvider();
         userAccount = new UserAccount();
         
         userAccount.initSaccount();
@@ -36,6 +37,7 @@ public class SkypeDustManager {
         
         CommandListener commandListener = new CommandListener();
         commandListener.setSkypeMessenger(skypeMessenger);
+        dataProvider = new DataProvider();
         commandListener.setCommandCons(dataProvider.getAllowedContacts(userAccount.userSettings.getUsername()));
         commandListener.setUberClient(new RestfullClient("http://uberdust.cti.gr/rest/testbed/1"));
         commandListener.setWebsocketClient(SkypedustWebSocket.getInstance("ws://uberdust.cti.gr:80/readings.ws"));
@@ -85,11 +87,24 @@ public class SkypeDustManager {
     }
     
     public String[] getAllowedContacts() {
-        
-        return dataProvider.getAllowedContacts(userAccount.userSettings.getUsername());
+        String[] contacts = dataProvider.getAllowedContacts(userAccount.userSettings.getUsername());
+        return contacts;
     }
     
     public String[] getAccountContacts() {
         return userAccount.getAccountContacts();
+    }
+    
+    public int insertUpdateNode(String realname,String nickname){
+        
+        return dataProvider.insertupdateNode(realname, nickname);
+    }
+    
+    public List<NodeShortname> getnodesShortName(){
+        return dataProvider.getnodesShortname();
+    }
+    
+    public void deleteNode(String realname) {
+        dataProvider.deleteNode(realname);
     }
 }

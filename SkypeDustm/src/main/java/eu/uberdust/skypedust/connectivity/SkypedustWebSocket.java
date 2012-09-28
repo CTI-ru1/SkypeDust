@@ -27,35 +27,29 @@ public class SkypedustWebSocket extends UberdustClient implements Observer {
         synchronized (SkypedustWebSocket.class) {
             if(instance == null) {
                 instance = new SkypedustWebSocket();
-                WSReadingsClient.getInstance().setServerUrl(webSocketread);
+                WSReadingsClient.getInstance().setServerUrl(webSocketread);                
             }
         }
         return instance;
     }
     
     private SkypedustWebSocket() {
+        WSReadingsClient.getInstance().addObserver(this);
     }
 
     public void subscribeUpdate(String contact,String node,String capability) {
                         
         WSReadingsClient.getInstance().subscribe(node, getcapabilityName(capability));
-        WSReadingsClient.getInstance().addObserver(this);
+           
         //subscribeUser(node+"@"+capability,contact);
         subscribeUser(node, capability, contact);
     }
     
     private void subscribeUser(String node,String capability,String contact) {
         
-        /*
-        if(registeredUsers.containsKey(id)) {
-            
-            if(!registeredUsers.get(id).contains(contact)) {
-                registeredUsers.get(id).add(contact);
-            }
-        }
-        else {
-            registeredUsers.put(id, Arrays.asList(new String[] {contact}));
-        }*/
+        DataProvider dataProvider = new DataProvider();
+        dataProvider.insertRegisteredContact(contact, node, capability);
+        dataProvider.close();
     }
     
     private void unsubscribeUser(String node,String capability) {
@@ -89,24 +83,20 @@ public class SkypedustWebSocket extends UberdustClient implements Observer {
         if( arg instanceof Message.NodeReadings) {
             Message.NodeReadings reading =(Message.NodeReadings)arg;
         
-            DataProvider dataProvider = new DataProvider();
-            String[] contacts = dataProvider.getAllowedContacts("gkatzbot");
+            String node = new String(reading.getReading(0).getNode());
+            String capability = new String(reading.getReading(0).getCapability());
+
+            DataProvider dataProvider = new DataProvider();            
+            String[] contacts = dataProvider.getRegisteredContacts(node,capability);
+            dataProvider.close();
             
-            
-            skypeMessenger.sendMessage(contacts,"Node "+
-                    reading.getReading(0).getNode()+
-                    " reading "+
-                    reading.getReading(0).getStringReading());
-            /*
-            String id = reading.getReading(0).getNode()+"@"+reading.getReading(0).getCapability();
-            String[] users = getUsers(id);
-            
-            if(users!=null) {
-                skypeMessenger.sendMessage(users, "lalalal");
+            if(contacts!=null) {
+                skypeMessenger.sendMessage(contacts,"Node "+
+                        reading.getReading(0).getNode()+
+                        " reading "+
+                        reading.getReading(0).getStringReading());
+                dataProvider.close();
             }
-            else {
-                skypeMessenger.sendMessage(users, "What the fuck");
-            }*/            
         }
     }
 }
