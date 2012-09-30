@@ -838,6 +838,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         
+        /*
         jFileChooser.showDialog(this,"Select Request Formatter Plugin");
         try {
             String path = jFileChooser.getSelectedFile().getAbsolutePath();
@@ -848,7 +849,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
             }
         } catch (PluginException ex) {
             Logger.getLogger(SkypeDustApp.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -1203,7 +1204,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
     
     private JFileChooser jFileChooser = new JFileChooser();
     private UserAccount userAccount;
-    private ConlistHandler conlistHandler = new ConlistHandler();
+    //private ConlistHandler conlistHandler = new ConlistHandler();
     private DefaultListModel model = new DefaultListModel();
     private DefaultTableModel tableModel = new DefaultTableModel();
     private DefaultTableModel reqpluginModel = new DefaultTableModel();

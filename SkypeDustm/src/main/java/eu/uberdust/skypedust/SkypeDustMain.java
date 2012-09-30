@@ -40,6 +40,7 @@ public class SkypeDustMain {
         if(args.length==0){
             
             java.awt.EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                 new SkypeDustApp().setVisible(true);
                 }
