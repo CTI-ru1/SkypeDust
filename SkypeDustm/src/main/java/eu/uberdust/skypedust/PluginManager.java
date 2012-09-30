@@ -29,6 +29,10 @@ import org.xml.sax.SAXException;
  */
 public class PluginManager {
 
+
+    
+    
+    /*
     public static final String requestag = "request";
     
     public static void AutoMode() {
@@ -49,17 +53,17 @@ public class PluginManager {
         
                 if(class1!=null) {
                     return pluginSettings;
-                    /*
-                    try {
-                        RequestInterface reqInterface = (RequestInterface) class1.newInstance();
-                        System.out.println(reqInterface.uberRequest("",""));
-                        //return reqInterface;
-                        return pluginSettings;
-                    } catch (InstantiationException ex) {
-                        Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IllegalAccessException ex) {
-                        Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
-                    }*/
+                    
+                    //try {
+                    //    RequestInterface reqInterface = (RequestInterface) class1.newInstance();
+                    //    System.out.println(reqInterface.uberRequest("",""));
+                    //    //return reqInterface;
+                    //    return pluginSettings;
+                    //} catch (InstantiationException ex) {
+                    //    Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+                    //} catch (IllegalAccessException ex) {
+                    //    Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+                    //}
                 }
             
             } else {
@@ -204,4 +208,5 @@ public class PluginManager {
             Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
         }        
     }
+    */
 }

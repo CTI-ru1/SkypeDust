@@ -4,15 +4,11 @@
  */
 package eu.uberdust.skypedust.requestformater;
 
-import com.skype.api.Sms;
 import eu.uberdust.skypedust.connectivity.RestfullClient;
 import eu.uberdust.skypedust.connectivity.SkypeMessenger;
 import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
-import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import eu.uberdust.skypedust.requestformater.DefaultRequest;
 
 /**
  *
@@ -26,7 +22,8 @@ public class CommandListener implements RequestHanlder {
     private RequestHanlder skypedustRequest;
     private SkypeMessenger skypeMessenger;
 
-    public void setCommandCons(String[] contacts) {
+    @Override
+    public void setAllowedContacts(String[] contacts) {
         
         commandcons = new ArrayList<>();
         commandcons.addAll(Arrays.asList(contacts));
@@ -42,16 +39,23 @@ public class CommandListener implements RequestHanlder {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     *
+     * @param uberClient
+     */
+    @Override
     public void setUberClient(RestfullClient uberClient) {
         this.uberClient = uberClient;
         this.uberClient.setSkypeMessenger(skypeMessenger);
     }
 
+    @Override
     public void setWebsocketClient(SkypedustWebSocket skypedustWebSocket) {
         this.skypedustWebSocket = skypedustWebSocket;
         this.skypedustWebSocket.setSkypeMessenger(skypeMessenger);
     }
 
+    @Override
     public String inputParse(String author, String body) {
         if(commandcons.contains(author))
         {

@@ -4,9 +4,8 @@
  */
 package eu.uberdust.skypedust.requestformater;
 
-import eu.uberdust.skypedust.connectivity.SkypeMessenger;
-import java.util.ArrayList;
 import eu.uberdust.skypedust.connectivity.RestfullClient;
+import eu.uberdust.skypedust.connectivity.SkypeMessenger;
 import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
 /**
  *
@@ -14,7 +13,7 @@ import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
  */
 public interface RequestHanlder {
 
-    public void setCommandCons(String[] CommandCons);
+    public void setAllowedContacts(String[] CommandCons);
 
     public void setUberClient(RestfullClient uberClient);
     

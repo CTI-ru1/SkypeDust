@@ -61,7 +61,6 @@ public class ConlistHandler extends TransferHandler{
             return false;
         }
 
-        //We'll drop at the current selected index.
         int index = target.getSelectedIndex();
         if (source.equals(target)) {
             if (indices != null && index >= indices[0] - 1 &&

@@ -72,10 +72,18 @@ public class UserAccount {
         mySession.doTearDownSession();
     }
     
-    public void setCommandListener(RequestHanlder commandListener) {
-        this.cmdListener = commandListener;
-        cmdListener.setCommandCons(getAllowedContacts());
+    public void setRequestHandler(RequestHanlder requestHandler) {
+        this.cmdListener = requestHandler;
+        cmdListener.setAllowedContacts(getAllowedContacts());
         mySession.myJavaTutorialListeners.setcommandListener(cmdListener);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public RequestHanlder getRequestHandler() {
+        return cmdListener;
     }
     
     public void setVoipListener(VoipListener voipListener) {

@@ -21,7 +21,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class RestfullClient extends UberdustClient{
+public class RestfullClient extends UberdustClient {
 
     private URL uberurl;
     private HttpClient httpClient;
@@ -110,7 +110,7 @@ public class RestfullClient extends UberdustClient{
 
     public String getnodeCapabilities(String node) {
 
-        String customurl = uberurl.toString()+"/node/"+node+nodecapabilities;
+        String customurl = uberurl.toString()+"/node/"+getnodeName(node) +nodecapabilities;
         String reply = basicGet(customurl);
         
         JSONParser parser = new JSONParser();
@@ -135,7 +135,7 @@ public class RestfullClient extends UberdustClient{
 
     public String getnodeCapability(String node,String capability,Integer limit) {
         
-        String customurl = uberurl.toString()+"/node/"+node+"/capability/"
+        String customurl = uberurl.toString()+"/node/"+getnodeName(node) +"/capability/"
                 +getcapabilityName(capability)+"/json/limit/"+limit.toString();
         
         System.out.println("The url: "+customurl);
@@ -163,105 +163,13 @@ public class RestfullClient extends UberdustClient{
     
     public String setTonodecapability(String node,String capability,String reading) {
         
-        String customurl = uberurl.toString()+"/node/"+node
+        String customurl = uberurl.toString()+"/node/"+getnodeName(node)
                 +"/capability/"+getcapabilityName(capability) +"/insert/timestamp/"
                 +unixTimestamp()+"/reading/"+reading+"/";
 
         System.out.println("The url: "+customurl);
         return basicGet(customurl);
 
-    }
-    
-    public String getnodeLight(String node,Integer limit){
-
-        String customurl = uberurl.toString()+"/node/"+node+"/capability/"+wiselight+"/limit/"+limit.toString();
-        String reget = basicGet(customurl);
-            
-        try {
-            Object obj = jsonParser.parse(reget);
-            JSONObject jobj = (JSONObject)obj;
-            JSONArray array = (JSONArray) jobj.get("readings");
-            
-            String lightstatus="";
-            for(int i=0 ;i<array.size();i++){
-                JSONObject joObject = (JSONObject) array.get(i);
-                lightstatus = "timestamp "+joObject.get("timestamp")+"\n";
-                lightstatus = lightstatus+"reading "+joObject.get("reading")+"\n";
-            }
-                    
-            return lightstatus;            
-        } catch (ParseException ex) {
-            Logger.getLogger(RestfullClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return reget;
-    }
-    
-    public String getnodeTemperature(String node,Integer limit){
-    
-        String customurl = uberurl.toString()+"/node/"+node+"/capability/"+wisetemp+"/limit/"+limit.toString();
-        String reget = basicGet(customurl);
-        try {
-            Object obj = jsonParser.parse(reget);
-            JSONObject jobj = (JSONObject)obj;
-            JSONArray array = (JSONArray) jobj.get("readings");
-            String tempstatus="";
-            for(int i=0 ;i<array.size();i++){
-                JSONObject joObject = (JSONObject) array.get(i);
-                tempstatus = "timestamp "+joObject.get("timestamp")+"\n";
-                tempstatus = tempstatus+"reading "+joObject.get("reading")+"\n";
-            }
-                    
-            return tempstatus;
-        } catch (ParseException ex) {
-            Logger.getLogger(RestfullClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return reget;
-    }
-    
-    /*
-     * Setting node temperature 
-     */
-    
-    public String setNodeTemperature(String node,String reading) {
-        
-        String customurl = uberurl.toString()+"/node/"+node
-                +"/capability/urn:wisebed:node:capability:temperature/insert/timestamp/"
-                +unixTimestamp()+"/reading/"+reading+"/";
-        System.out.println("The url: "+customurl);
-        return basicGet(customurl);
-    }
-    
-    /*
-     * Setting the ligt reading
-     */
-    
-    public String setnodeLight(String node,String reading) {
-        
-        String customurl = uberurl.toString()+"/node/"+node
-                +"/capability/urn:wisebed:node:capability:light/insert/timestamp/"
-                +unixTimestamp()+"/reading/"+reading+"/";
-        return basicGet(customurl);
-    }
-    
-    /*
-     *  In case we want to turn on/off the light
-     */
-    
-    public String setnodeLight(String node,boolean onoff) {
-    
-        String reading;
-        if(onoff) {
-            reading="1";
-        }
-        else {
-            reading = "0";
-        }
-        
-        String customurl = uberurl.toString()+"/node/"+node
-                + "/capability/urn:wisebed:node:capability:light/insert/timestamp/"
-                + unixTimestamp() +"/reading/"+reading+"/";
-        
-        return customurl;
     }
         
     private String basicGet(String geturl){

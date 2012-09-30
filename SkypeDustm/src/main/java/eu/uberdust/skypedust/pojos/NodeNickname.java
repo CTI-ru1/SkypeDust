@@ -8,15 +8,15 @@ package eu.uberdust.skypedust.pojos;
  *
  * @author carnage
  */
-public class NodeShortname {
+public class NodeNickname {
 
     private String nodeName;
     private String shortName;
 
-    public NodeShortname() {
+    public NodeNickname() {
     }
     
-    public NodeShortname(String nodename,String shortname) {
+    public NodeNickname(String nodename,String shortname) {
         
         nodeName = nodename;
         shortName = shortname;

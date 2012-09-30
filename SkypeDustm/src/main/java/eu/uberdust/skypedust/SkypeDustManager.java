@@ -4,17 +4,14 @@
  */
 package eu.uberdust.skypedust;
 
-import eu.uberdust.skypedust.requestformater.CommandListener;
+import eu.uberdust.skypedust.connectivity.RestfullClient;
 import eu.uberdust.skypedust.connectivity.SkypeMessenger;
 import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
-import eu.uberdust.skypedust.connectivity.RestfullClient;
-import eu.uberdust.skypedust.pojos.NodeShortname;
-import eu.uberdust.skypedust.ui.ConlistHandler;
-import eu.uberdust.skypedust.useraccount.UserAccount;
-import eu.uberdust.skypedust.requestformater.DefaultRequest;
+import eu.uberdust.skypedust.pojos.CapabilityNickname;
+import eu.uberdust.skypedust.pojos.NodeNickname;
+import eu.uberdust.skypedust.requestformater.CommandListener;
 import eu.uberdust.skypedust.requestformater.RequestHanlder;
-import java.util.ArrayList;
-import java.util.Arrays;
+import eu.uberdust.skypedust.useraccount.UserAccount;
 import java.util.List;
 
 /**
@@ -27,6 +24,7 @@ public class SkypeDustManager {
     private PluginManager pluginManager;
     private SkypeMessenger skypeMessenger;
     private DataProvider dataProvider;
+    private RequestHanlder requestHanlder;
     
     public SkypeDustManager() {
         
@@ -35,14 +33,14 @@ public class SkypeDustManager {
         userAccount.initSaccount();
         skypeMessenger = new SkypeMessenger(userAccount.getSession());
         
-        CommandListener commandListener = new CommandListener();
-        commandListener.setSkypeMessenger(skypeMessenger);
+        requestHanlder = new CommandListener();
+        requestHanlder.setSkypeMessenger(skypeMessenger);
         dataProvider = new DataProvider();
-        commandListener.setCommandCons(dataProvider.getAllowedContacts(userAccount.userSettings.getUsername()));
-        commandListener.setUberClient(new RestfullClient("http://uberdust.cti.gr/rest/testbed/1"));
-        commandListener.setWebsocketClient(SkypedustWebSocket.getInstance("ws://uberdust.cti.gr:80/readings.ws"));
-        commandListener.setCommandCons(userAccount.getAllowedContacts());
-        userAccount.setCommandListener(commandListener);
+        requestHanlder.setAllowedContacts(dataProvider.getAllowedContacts(userAccount.userSettings.getUsername()));
+        requestHanlder.setUberClient(new RestfullClient("http://uberdust.cti.gr/rest/testbed/1"));
+        requestHanlder.setWebsocketClient(SkypedustWebSocket.getInstance("ws://uberdust.cti.gr:80/readings.ws"));
+        //requestHanlder.setAllowedContacts(userAccount.getAllowedContacts());
+        userAccount.setRequestHandler(requestHanlder);
         
     }
 
@@ -69,17 +67,27 @@ public class SkypeDustManager {
         */
     }
     
+    private void refreshContacts() {
+        
+        userAccount.getRequestHandler().setAllowedContacts(
+                dataProvider.getAllowedContacts(
+                userAccount.userSettings.getUsername()));
+    }
+    
     public void setAllowedContact(String contact) {
         dataProvider.insertAllowedContact(contact,userAccount.userSettings.getUsername());
+        refreshContacts();
     }
     
     public void removeAllowedContact(String contact) {
         if(dataProvider.removeAllowedContact(userAccount.userSettings.getUsername(), contact)) {
             System.out.println("Success");
+            refreshContacts();
         }
         else {
             System.out.println("Fail");
         }
+        
     }
     
     public void setAllowedContacts(String[] allowedContacts) {
@@ -100,11 +108,23 @@ public class SkypeDustManager {
         return dataProvider.insertupdateNode(realname, nickname);
     }
     
-    public List<NodeShortname> getnodesShortName(){
+    public List<NodeNickname> getnodesShortName(){
         return dataProvider.getnodesShortname();
     }
     
     public void deleteNode(String realname) {
         dataProvider.deleteNode(realname);
+    }
+    
+    public int insertUpdateCapability(String realname,String nickname) {
+        return dataProvider.insertupdateCapability(realname, nickname);
+    }
+    
+    public List<CapabilityNickname> getcapablityShortName() {
+        return dataProvider.getcapabilitiesNickname();
+    }
+    
+    public void deleteCapability(String realname) {
+        dataProvider.deleteCapability(realname);
     }
 }

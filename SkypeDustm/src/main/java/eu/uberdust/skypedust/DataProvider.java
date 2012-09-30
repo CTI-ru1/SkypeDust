@@ -9,20 +9,18 @@ package eu.uberdust.skypedust;
  * @author carnage
  */
 
-import eu.uberdust.skypedust.pojos.NodeShortname;
+import eu.uberdust.skypedust.pojos.CapabilityNickname;
+import eu.uberdust.skypedust.pojos.NodeNickname;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.derby.jdbc.EmbeddedDriver;
-import org.omg.CORBA.PRIVATE_MEMBER;
 
 public class DataProvider {
     
@@ -33,6 +31,22 @@ public class DataProvider {
     private Connection connection;
     private Statement statement;
     
+    private static final String[] createTablesQueries = new String[] {
+        "CREATE TABLE NODE(REALNAME VARCHAR(100),NICKNAME VARCHAR(100))",
+        "CREATE TABLE CAPABILITY(REALNAME VARCHAR(100),NICKNAME VARCHAR(100))",
+        "CREATE TABLE ACCOUNT(USERNAME VARCHAR(100))",
+        "CREATE TABLE ALLOWEDCONTACT(CONTACT VARCHAR(100),USERNAME VARCHAR(100))",
+        "CREATE TABLE REGISTEREDUSER(CONTACT VARCHAR(100),NODE VARCHAR(100),CAPABILITY VARCHAR(100))",
+        "CREATE TABLE PLUGIN(NAME VARCHAR(100),PATH LONG VARCHAR,TYPE VARCHAR(100))"};
+    
+    private static final String[] dropTablesQueries = new String[] {
+        "DROP TABLE NODE",
+        "DROP TABLE CAPABILITY",
+        "DROP TABLE ACCOUNT",
+        "DROP TABLE ALLOWEDCONTACT",
+        "DROP TABLE REGISTEREDUSER",
+        "DROP TABLE PLUGIN"};
+    
     public DataProvider() {
         
         try {
@@ -40,7 +54,7 @@ public class DataProvider {
             connection = null;
             try {
                 connection = DriverManager.getConnection(protocol+":"+dbName+";create=true");
-                //createTables();
+                createTables();
                 //dropTables();
                 //createTables();
             } catch (SQLException ex) {
@@ -52,36 +66,32 @@ public class DataProvider {
     }
     
     private void createTables() {
-        try {
-            statement = connection.createStatement();
-            statement.execute("CREATE TABLE NODE(REALNAME VARCHAR(100),NICKNAME VARCHAR(100))");
-            statement.execute("CREATE TABLE UTILITIES(REALNAME VARCHAR(100),NICKNAME VARCHAR(100))");
-            statement.execute("CREATE TABLE ACCOUNT(USERNAME VARCHAR(100))");
-            statement.execute("CREATE TABLE ALLOWEDCONTACT(CONTACT VARCHAR(100),USERNAME VARCHAR(100))");
-            statement.execute("CREATE TABLE REGISTEREDUSER(CONTACT VARCHAR(100),NODE VARCHAR(100),CAPABILITY VARCHAR(100))");
-            statement.close();
-            System.out.println("Created Table");
-        } catch (SQLException ex) {
-            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        
+        for(String query: createTablesQueries) {
+            executeQuery(query);
+        }
     }
     
     private void dropTables() {
-        try {
-            statement = connection.createStatement();
-            statement.execute("DROP TABLE NODE");
-            statement.execute("DROP TABLE UTILITIES");
-            statement.execute("DROP TABLE ACCOUNT");
-            statement.execute("DROP TABLE ALLOWEDCONTACT");
-            statement.execute("DROP TABLE REGISTEREDUSER");
-            statement.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
-        }            
+                    
+        for(String query: dropTablesQueries) {
+            executeQuery(query);
+        }
     }
     
     private void loadDriver() throws ClassNotFoundException {
         Class.forName(driver);
+    }
+    
+    private void executeQuery(String query) {
+        
+        try {
+            statement = connection.createStatement();
+            statement.execute(query);
+            statement.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public int insertAccount(String username) {
@@ -193,20 +203,20 @@ public class DataProvider {
         return toret;
     }
     
-    public List<NodeShortname> getnodesShortname() {
+    public List<NodeNickname> getnodesShortname() {
     
         try {
             
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT*FROM NODE");
             
-            List<NodeShortname> nodeShortnames = new ArrayList<NodeShortname>();
+            List<NodeNickname> nodeShortnames = new ArrayList<NodeNickname>();
             
             while(resultSet.next()) {
                 
                 String realname = resultSet.getString("REALNAME");
                 String shortname = resultSet.getString("NICKNAME");
-                nodeShortnames.add(new NodeShortname(realname, shortname));
+                nodeShortnames.add(new NodeNickname(realname, shortname));
             }
 
             resultSet.close();
@@ -269,7 +279,10 @@ public class DataProvider {
         return toret;
     }
     
-    public void deleteNode(String realname) {
+    public boolean deleteNode(String realname) {
+        
+        boolean toret = false;
+        
         try {
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
             ResultSet resultSet = statement.executeQuery("SELECT*FROM NODE "
@@ -277,12 +290,146 @@ public class DataProvider {
             
             while(resultSet.next()) {
                 resultSet.deleteRow();
+                toret = true;
             }
+            
+            resultSet.close();
+            statement.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
+    
+    public int insertupdateCapability(String realname,String nickname) {
+
+        int toret = 0;
+        try {
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM CAPABILITY "
+                    + "WHERE REALNAME='"+realname+"'");
+            
+            if(getnumRows(resultSet)==0) {
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO CAPABILITY(REALNAME,NICKNAME) VALUES(?,?)");
+                preparedStatement.setString(1,realname);
+                preparedStatement.setString(2,nickname);
+                toret = preparedStatement.executeUpdate();
+                preparedStatement.close();
+            }
+            else {
+                
+                toret = statement.executeUpdate("UPDATE CAPABILITY "
+                        + "SET NICKNAME='"+nickname+"' "
+                        + "WHERE REALNAME='"+realname+"'");                    
+            }
+            
+            statement.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return toret;                
+    }
+
+    public List<CapabilityNickname> getcapabilitiesNickname(){
+        
+        try {
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM CAPABILITY");
+            List<CapabilityNickname> capabilityNicknames = new ArrayList<CapabilityNickname>();
+            
+            while(resultSet.next()) {
+                
+                String realname = resultSet.getString("REALNAME");
+                String nickname = resultSet.getString("NICKNAME");
+                capabilityNicknames.add(new CapabilityNickname(realname, nickname));
+            }
+            
+            resultSet.close();
+            statement.close();
+            
+            return capabilityNicknames;
+                    
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    public String getcapabilityShortName(String realname) {
+        
+        String toret = null;
+        
+        try {
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM CAPABILITY "
+                    + "WHERE REALNAME='"+realname+"'");
+            
+            while(resultSet.next()) {
+                toret = resultSet.getString("NICKNAME");
+            }
+                
+            resultSet.close();
+            statement.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return toret;
+    }
+
+    public String getcapabilityRealName(String shortname) {
+    
+        String toret=null;
+        try {
+            
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM CAPABILITY "
+                    + "WHERE NICKNAME='"+shortname+"'");
+            
+            while(resultSet.next()) {
+                toret = resultSet.getString("REALNAME");
+            }
+            
+            resultSet.close();
+            statement.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return toret;
+    }    
+    
+    public boolean deleteCapability(String realname) {
+        
+        boolean toret = false;
+        
+        try {
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM CAPABILITY "
+                    + " WHERE REALNAME='"+realname+"'");
+            
+            while(resultSet.next()) {
+                resultSet.deleteRow();
+                toret = true;
+            }
+            
+            resultSet.close();
+            statement.close();
             
         } catch (SQLException ex) {
             Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
         }        
-    }
+        
+        return toret;
+    }    
     
     public boolean removeAllowedContact(String username,String contact) {
         

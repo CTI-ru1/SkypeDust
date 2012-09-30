@@ -17,7 +17,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.table.DefaultTableModel;
 import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
-import eu.uberdust.skypedust.pojos.NodeShortname;
+import eu.uberdust.skypedust.pojos.CapabilityNickname;
+import eu.uberdust.skypedust.pojos.NodeNickname;
 import eu.uberdust.skypedust.pojos.PluginSettings;
 import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import java.util.ArrayList;
@@ -35,12 +36,14 @@ import javax.swing.ListModel;
 public class SkypeDustApp extends javax.swing.JFrame {
 
     private SkypeDustManager skypeDustManager;
+    private String title = "SkypeDust 1.0";
     
     /**
      * Creates new form SkypeDustApp
      */
     public SkypeDustApp() {
         initComponents();
+        this.setTitle(title);
         
         skypeDustManager = new SkypeDustManager();
         userAccount = skypeDustManager.getUserAccount();
@@ -52,6 +55,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
             setContactList(skypeDustManager.getAccountContacts());
             setAllowedList(skypeDustManager.getAllowedContacts());
             setNodeTable(skypeDustManager.getnodesShortName());
+            setCapabilityTable(skypeDustManager.getcapablityShortName());
         }
         this.addWindowListener(winlistener);
     }
@@ -195,7 +199,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                             .addComponent(usernameTextField)
                             .addComponent(nicknameTextField)
                             .addComponent(passwordPasswordField, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE))))
-                .addContainerGap(292, Short.MAX_VALUE))
+                .addContainerGap(302, Short.MAX_VALUE))
         );
         skypeAccountPanelLayout.setVerticalGroup(
             skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -261,7 +265,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel4)))
-                .addContainerGap(270, Short.MAX_VALUE))
+                .addContainerGap(280, Short.MAX_VALUE))
         );
         skypeFriendPanelLayout.setVerticalGroup(
             skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -303,7 +307,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
                     .addComponent(jToggleButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
         skypeMessagePanel1Layout.setVerticalGroup(
             skypeMessagePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,7 +364,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                         .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(266, Short.MAX_VALUE))
+                .addContainerGap(276, Short.MAX_VALUE))
         );
         settingsPanelLayout.setVerticalGroup(
             settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -441,7 +445,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
             .addGroup(pluginsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pluginsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
                     .addGroup(pluginsPanelLayout.createSequentialGroup()
                         .addGroup(pluginsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -533,52 +537,53 @@ public class SkypeDustApp extends javax.swing.JFrame {
         nodePanelLayout.setHorizontalGroup(
             nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(nodePanelLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(nodePanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 677, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(1, 1, 1))
-                    .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(nodePanelLayout.createSequentialGroup()
-                            .addComponent(jLabel8)
-                            .addGap(18, 18, 18)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(nodePanelLayout.createSequentialGroup()
-                            .addComponent(jLabel7)
-                            .addGap(18, 18, 18)
+                        .addGap(39, 39, 39)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, nodePanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(nodePanelLayout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(nodePanelLayout.createSequentialGroup()
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, nodePanelLayout.createSequentialGroup()
                                     .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
                                     .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(27, Short.MAX_VALUE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, nodePanelLayout.createSequentialGroup()
+                                    .addComponent(jLabel7)
+                                    .addGap(217, 217, 217)
+                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
         nodePanelLayout.setVerticalGroup(
             nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(nodePanelLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
-                .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel8)
+                .addGap(36, 36, 36)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel7)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
                 .addGap(18, 18, 18)
                 .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton13)
-                    .addComponent(jButton12))
-                .addContainerGap(72, Short.MAX_VALUE))
+                    .addComponent(jButton12)
+                    .addComponent(jButton13))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
 
         mainPanel.add(nodePanel, "card5");
 
         capabilityPanel.setName("card6"); // NOI18N
 
-        jTable5.setModel(nodetableModel);
+        jTable5.setModel(capabilitytableModel);
         jTable5.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable5MouseClicked(evt);
@@ -620,45 +625,42 @@ public class SkypeDustApp extends javax.swing.JFrame {
         capabilityPanelLayout.setHorizontalGroup(
             capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(capabilityPanelLayout.createSequentialGroup()
-                .addGroup(capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(47, 47, 47)
+                .addGroup(capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, capabilityPanelLayout.createSequentialGroup()
-                        .addGap(249, 249, 249)
-                        .addGroup(capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel13)
-                            .addComponent(jLabel14))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
-                            .addComponent(jTextField5))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(capabilityPanelLayout.createSequentialGroup()
-                        .addContainerGap(33, Short.MAX_VALUE)
-                        .addGroup(capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(capabilityPanelLayout.createSequentialGroup()
-                                .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 669, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(28, Short.MAX_VALUE))
+                                .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(51, 51, 51)
+                                .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         capabilityPanelLayout.setVerticalGroup(
             capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(capabilityPanelLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22)
+                .addGap(38, 38, 38)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
                 .addGroup(capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13))
-                .addGap(14, 14, 14)
+                .addGap(18, 18, 18)
                 .addGroup(capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton15)
-                    .addComponent(jButton14))
-                .addContainerGap(102, Short.MAX_VALUE))
+                    .addComponent(jButton14)
+                    .addComponent(jButton15))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
 
         mainPanel.add(capabilityPanel, "card6");
@@ -770,7 +772,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 740, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -924,6 +926,8 @@ public class SkypeDustApp extends javax.swing.JFrame {
         System.out.println(node);
         skypeDustManager.deleteNode(node);
         nodetableModel.removeRow(i);
+        jTextField3.setText("");
+        jTextField4.setText("");
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jTable4FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable4FocusGained
@@ -970,7 +974,11 @@ public class SkypeDustApp extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jTable5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable5MouseClicked
-        // TODO add your handling code here:
+        int i = jTable5.getSelectedRow();
+        String capability = (String) capabilitytableModel.getValueAt(i, 0);
+        String nickname =(String) capabilitytableModel.getValueAt(i, 1);
+        jTextField5.setText(capability);
+        jTextField6.setText(nickname);
     }//GEN-LAST:event_jTable5MouseClicked
 
     private void jTable5FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable5FocusGained
@@ -982,24 +990,62 @@ public class SkypeDustApp extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField5ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        // TODO add your handling code here:
+        int i = jTable5.getSelectedRow();
+        String node = (String) capabilitytableModel.getValueAt(i, 0);
+        System.out.println(node);
+        skypeDustManager.deleteCapability(node);
+        capabilitytableModel.removeRow(i);
+        jTextField5.setText("");
+        jTextField6.setText("");
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-        // TODO add your handling code here:
+        
+        String capability = jTextField5.getText();
+        String nickname = jTextField6.getText();
+        
+        if(skypeDustManager.insertUpdateCapability(capability, nickname)!=0) {
+            
+            int position = -1;
+            for(int i=0;i<capabilitytableModel.getRowCount();i++) {
+                
+                System.out.println(capabilitytableModel.getValueAt(i, 0));
+                if(((String)capabilitytableModel.getValueAt(i, 0)).equals(capability)) {
+                    position = i;
+                }
+            }
+            
+            if(position==-1) {
+                System.out.println("Add");
+                capabilitytableModel.addRow(new String[] {capability,nickname});
+            }
+            else {
+                capabilitytableModel.setValueAt(nickname, position, 1);
+            }
+        }        
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         cardSwitcher("card6");
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
-    private void setNodeTable(List<NodeShortname> nodeShortnames) {
+    private void setNodeTable(List<NodeNickname> nodeShortnames) {
         
-        for(NodeShortname nodeShortname : nodeShortnames) {
+        for(NodeNickname nodeShortname : nodeShortnames) {
             
             nodetableModel.addRow(new String[] {
                 nodeShortname.getNodeName(),
                 nodeShortname.getShortName()});
+        }
+    }
+    
+    private void setCapabilityTable(List<CapabilityNickname> capabilityNicknames) {
+    
+        for(CapabilityNickname capabilityNickname: capabilityNicknames) {
+
+            capabilitytableModel.addRow(new String[]{
+                capabilityNickname.getCapabilityName(),
+                capabilityNickname.getNickName()});
         }
     }
     
@@ -1164,6 +1210,8 @@ public class SkypeDustApp extends javax.swing.JFrame {
     private DefaultListModel contactsModel = new DefaultListModel();
     private DefaultListModel allowedModel = new DefaultListModel();
     private DefaultTableModel nodetableModel = new DefaultTableModel(
-            new Object [][] {},new String [] {"Node Name", "Command Name"});
+            new Object [][] {},new String [] {"Node Name", "Short Name"});
+    private DefaultTableModel capabilitytableModel = new DefaultTableModel(
+            new Object[][]{}, new String[] {"Capability Name","Short Name"});
     private boolean asyncmsg = false;
 }

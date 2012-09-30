@@ -4,6 +4,8 @@
  */
 package eu.uberdust.skypedust.connectivity;
 
+import eu.uberdust.skypedust.DataProvider;
+
 /**
  *
  * @author carnage
@@ -20,8 +22,34 @@ public abstract class UberdustClient {
         this.skypeMessenger = skypeMessenger;
     }    
     
-    protected String getcapabilityName(String capability) {
+    protected String getnodeName(String nickname) {
     
+        DataProvider dataProvider = new DataProvider();
+        String realname = dataProvider.getcapabilityRealName(nickname);
+        dataProvider.close();
+        
+        if(realname==null) {
+            return nickname;
+        }
+        else {
+            return realname;
+        }
+    }
+    
+    protected String getcapabilityName(String nickname) {
+    
+        DataProvider dataProvider = new DataProvider();
+        String realname = dataProvider.getcapabilityRealName(nickname);
+        dataProvider.close();
+
+        if(realname==null) {
+            return nickname;
+        }
+        else {
+            return realname;
+        }
+        
+        /*
         switch(capability) {
             
             case "lz2":
@@ -126,9 +154,9 @@ public abstract class UberdustClient {
                 return "urn:wisebed:ctitestbed:node:capability:sda2:usage";
             case "sda:usage":
                 return "urn:wisebed:ctitestbed:node:capability:sda:usage";
-        }
+        }*/
         
-        return null;
+        //return null;
     }
 
     protected String unixTimestamp() {

@@ -4,7 +4,6 @@
  */
 package eu.uberdust.skypedust.connectivity;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import eu.uberdust.communication.protobuf.Message;
 import eu.uberdust.communication.websocket.readings.WSReadingsClient;
 import eu.uberdust.skypedust.DataProvider;
@@ -21,7 +20,7 @@ import java.util.Observer;
 public class SkypedustWebSocket extends UberdustClient implements Observer {
 
     private static SkypedustWebSocket instance = null;
-    private Map<String,List<String>> registeredUsers = new HashMap<String,List<String>>();
+    private Map<String,List<String>> registeredUsers = new HashMap<>();
     
     public static SkypedustWebSocket getInstance(String webSocketread) {
         synchronized (SkypedustWebSocket.class) {
@@ -41,7 +40,6 @@ public class SkypedustWebSocket extends UberdustClient implements Observer {
                         
         WSReadingsClient.getInstance().subscribe(node, getcapabilityName(capability));
            
-        //subscribeUser(node+"@"+capability,contact);
         subscribeUser(node, capability, contact);
     }
     
@@ -50,25 +48,6 @@ public class SkypedustWebSocket extends UberdustClient implements Observer {
         DataProvider dataProvider = new DataProvider();
         dataProvider.insertRegisteredContact(contact, node, capability);
         dataProvider.close();
-    }
-    
-    private void unsubscribeUser(String node,String capability) {
-        
-        
-    }
-    
-    private String[] subscribedUsers(String node,String capability) {
-        
-        /*
-        if(registeredUsers.containsKey(id)) {
-        
-            return registeredUsers.get(id).toArray(new String[registeredUsers.get(id).size()]);
-        }
-        else {
-            return null;
-        }*/
-        
-        return null;
     }
     
     @Override
