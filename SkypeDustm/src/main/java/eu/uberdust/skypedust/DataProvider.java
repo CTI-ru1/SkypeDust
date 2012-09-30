@@ -38,7 +38,7 @@ public class DataProvider {
         {"ACCOUNT", "CREATE TABLE ACCOUNT(USERNAME VARCHAR(100))"},
         {"ALLOWEDCONTACT","CREATE TABLE ALLOWEDCONTACT(CONTACT VARCHAR(100),USERNAME VARCHAR(100))"},
         {"REGISTEREDUSER","CREATE TABLE REGISTEREDUSER(CONTACT VARCHAR(100),NODE VARCHAR(100),CAPABILITY VARCHAR(100))"},
-        {"PLUGIN", "CREATE TABLE PLUGIN(NAME VARCHAR(100),TYPE VARCHAR(100)),PATH LONG VARCHAR"}};
+        {"PLUGIN", "CREATE TABLE PLUGIN(NAME VARCHAR(100),TYPE VARCHAR(100)),PATH LONG VARCHAR,ENABLED BOOLEAN"}};
     
     private static final String[][] dropTablesQueries = new String[][] {
         {"NODE","DROP TABLE NODE"},
@@ -595,13 +595,20 @@ public class DataProvider {
                 plugin[0] = resultSet.getString("NAME");
                 plugin[1] = resultSet.getString("TYPE");
                 plugin[2] = resultSet.getString("PATH");
+                if(resultSet.getBoolean("ENABLED")) {
+                    plugin[3]="Enabled";
+                }
+                else {
+                    plugin[3]="Disabled";
+                }
+                
                 plugins.add(plugin);
             }
             
             resultSet.close();
             statement.close();
             
-            return plugins.toArray(new String[plugins.size()][3]);
+            return plugins.toArray(new String[plugins.size()][4]);
                     
         } catch (SQLException ex) {
             Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
@@ -623,13 +630,38 @@ public class DataProvider {
             if(getnumRows(resultSet)==0) {
                 
                 PreparedStatement preparedStatement = connection.prepareStatement(
-                        "INSERT INTO PLUGIN(NAME,TYPE,PATH) VALUES(?,?,?)");
+                        "INSERT INTO PLUGIN(NAME,TYPE,PATH,ENABLED) VALUES(?,?,?,?)");
                 preparedStatement.setString(1,name);
                 preparedStatement.setString(2,type);
                 preparedStatement.setString(3,path);
+                preparedStatement.setBoolean(4, false);
                 toret  = preparedStatement.executeUpdate(); 
             }
+            
+            resultSet.close();
+            statement.close();
                         
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return toret;
+    }
+    
+    public int enabledisPlugin(String name,Boolean enabledis) {
+        
+        int toret = 0;
+        try {
+            statement = connection.createStatement(
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM PLUGIN "
+                    + "WHERE NAME='"+name+"'");
+            if(getnumRows(resultSet)==1) {
+                toret = statement.executeUpdate("UPDATE PLUGIN "
+                        + "SET ENABLED="+enabledis.toString()+" "
+                        + "WHERE NAME='"+name+"'");
+            }
+            
         } catch (SQLException ex) {
             Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
         }
