@@ -38,7 +38,7 @@ public class DataProvider {
         {"ACCOUNT", "CREATE TABLE ACCOUNT(USERNAME VARCHAR(100))"},
         {"ALLOWEDCONTACT","CREATE TABLE ALLOWEDCONTACT(CONTACT VARCHAR(100),USERNAME VARCHAR(100))"},
         {"REGISTEREDUSER","CREATE TABLE REGISTEREDUSER(CONTACT VARCHAR(100),NODE VARCHAR(100),CAPABILITY VARCHAR(100))"},
-        {"PLUGIN", "CREATE TABLE PLUGIN(NAME VARCHAR(100),PATH LONG VARCHAR,TYPE VARCHAR(100))"}};
+        {"PLUGIN", "CREATE TABLE PLUGIN(NAME VARCHAR(100),TYPE VARCHAR(100)),PATH LONG VARCHAR"}};
     
     private static final String[][] dropTablesQueries = new String[][] {
         {"NODE","DROP TABLE NODE"},
@@ -55,9 +55,9 @@ public class DataProvider {
             connection = null;
             try {
                 connection = DriverManager.getConnection(protocol+":"+dbName+";create=true");
-                createTables();
-                //dropTables();
                 //createTables();
+                dropTables();
+                createTables();
             } catch (SQLException ex) {
                 Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -142,17 +142,15 @@ public class DataProvider {
         
         try {
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT*FROM ACCOUNT");
-            
-            List<String> accounts = new ArrayList<String>(); 
-            
-            while(resultSet.next()) {
-                String account = resultSet.getString("USERNAME");
-                System.out.println("To account "+account);
-                accounts.add(account);
+            List<String> accounts;
+            try (ResultSet resultSet = statement.executeQuery("SELECT*FROM ACCOUNT")) {
+                accounts = new ArrayList<String>();
+                while(resultSet.next()) {
+                    String account = resultSet.getString("USERNAME");
+                    System.out.println("To account "+account);
+                    accounts.add(account);
+                }
             }
-
-            resultSet.close();
             statement.close();
             
             return accounts.toArray(new String[accounts.size()]);
@@ -580,6 +578,83 @@ public class DataProvider {
         }
         
         return null;
+    }
+    
+    public String[][] getPlugins() {
+        
+        try {
+            statement = connection.createStatement(
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM PLUGIN");
+            
+            List<String[]> plugins = new ArrayList<>();
+            
+            while(resultSet.next()) {
+                
+                String[] plugin = new String[3];
+                plugin[0] = resultSet.getString("NAME");
+                plugin[1] = resultSet.getString("TYPE");
+                plugin[2] = resultSet.getString("PATH");
+                plugins.add(plugin);
+            }
+            
+            resultSet.close();
+            statement.close();
+            
+            return plugins.toArray(new String[plugins.size()][3]);
+                    
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    public int addPlugin(String name,String type,String path) {
+        
+        int toret = 0;
+        
+        try {
+            statement = connection.createStatement(
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM PLUGIN "
+                    + "WHERE NAME='"+name+"'");
+            
+            if(getnumRows(resultSet)==0) {
+                
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO PLUGIN(NAME,TYPE,PATH) VALUES(?,?,?)");
+                preparedStatement.setString(1,name);
+                preparedStatement.setString(2,type);
+                preparedStatement.setString(3,path);
+                toret  = preparedStatement.executeUpdate(); 
+            }
+                        
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return toret;
+    }
+    
+    public void removePlugin(String name) {
+        try {
+            statement = connection.createStatement(
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM PLUGIN "
+                    + "WHERE NAME='"+name+"'");
+            
+            while(resultSet.next()) {
+                resultSet.deleteRow();
+            }
+            
+            resultSet.close();
+            statement.close();
+                    
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     private int getnumRows(ResultSet resultSet) {
