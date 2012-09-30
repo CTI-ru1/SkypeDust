@@ -72,10 +72,15 @@ public class UserAccount {
         mySession.doTearDownSession();
     }
     
-    public void setRequestHandler(RequestHanlder requestHandler) {
-        this.cmdListener = requestHandler;
-        cmdListener.setAllowedContacts(getAllowedContacts());
-        mySession.myJavaTutorialListeners.setcommandListener(cmdListener);
+    public void setRequestHandler(RequestHanlder requestHandler) throws UserException {
+        try {
+            this.cmdListener = requestHandler;
+            mySession.myJavaTutorialListeners.setcommandListener(cmdListener);
+        }
+        catch (NullPointerException ex) {
+            Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
+            throw new UserException(UserException.Uninitialized);
+        }
     }
     
     /**
@@ -133,18 +138,20 @@ public class UserAccount {
         return password;
     }
     
-    public void initSaccount(){
+    public boolean initSaccount(){
         
         try {
             startRuntime();
             setKeypair();
             sessionSignin();
             LogFiles.writeLoginLog(userSettings.getUsername(),0);
+            return true;
         }
         catch (UserException ex) {
             Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
             if(ex.getMessage().equals(UserException.WrongCredentials));
                 LogFiles.writeLoginLog(userSettings.getUsername(),-1);
+                return false;
         }
     }
 
@@ -157,9 +164,14 @@ public class UserAccount {
         
     private void sessionSignin() throws UserException {
         
-        mySession.doCreateSession(null,userSettings.getUsername().toString(), appKeyPairMgr);
-        if(!mySession.mySignInMgr.Login(null, mySession,userSettings.getPassword().toString()))
-            throw new UserException(UserException.WrongCredentials);
+        try {
+            mySession.doCreateSession(null,userSettings.getUsername().toString(), appKeyPairMgr);
+            if(!mySession.mySignInMgr.Login(null, mySession,userSettings.getPassword().toString()))
+                throw new UserException(UserException.WrongCredentials);
+        }
+        catch(NullPointerException ex) {
+            Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }    
     
     public String[] getAllowedContacts(){
@@ -228,16 +240,23 @@ public class UserAccount {
                 userSettings.getUsername());
     }
     
-    public String[] getAccountContacts() {
-    
-        Contact[] contacts = mySession.mySkype.GetHardwiredContactGroup(ContactGroup.TYPE.ALL_BUDDIES).GetContacts();
+    public String[] getAccountContacts() throws UserException {
+
+        try{
         
-        String[] usernames = new String[contacts.length];
-        for(int i=0;i<contacts.length;i++) {
-            usernames[i] = contacts[i].GetIdentity();
+            Contact[] contacts = mySession.mySkype.GetHardwiredContactGroup(ContactGroup.TYPE.ALL_BUDDIES).GetContacts();
+
+            String[] usernames = new String[contacts.length];
+            for(int i=0;i<contacts.length;i++) {
+                usernames[i] = contacts[i].GetIdentity();
+            }
+
+            return usernames;
         }
-        
-        return usernames;
+        catch(NullPointerException ex) {
+            Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
+            throw new UserException(UserException.Uninitialized);
+        }
     }
     
     public void datatoUi() {

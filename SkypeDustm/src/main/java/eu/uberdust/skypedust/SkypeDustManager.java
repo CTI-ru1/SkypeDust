@@ -12,7 +12,10 @@ import eu.uberdust.skypedust.pojos.NodeNickname;
 import eu.uberdust.skypedust.requestformater.CommandListener;
 import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import eu.uberdust.skypedust.useraccount.UserAccount;
+import eu.uberdust.skypedust.useraccount.UserException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -29,18 +32,30 @@ public class SkypeDustManager {
     public SkypeDustManager() {
         
         userAccount = new UserAccount();
-        
-        userAccount.initSaccount();
-        skypeMessenger = new SkypeMessenger(userAccount.getSession());
-        
-        requestHanlder = new CommandListener();
-        requestHanlder.setSkypeMessenger(skypeMessenger);
         dataProvider = new DataProvider();
-        requestHanlder.setAllowedContacts(dataProvider.getAllowedContacts(userAccount.userSettings.getUsername()));
-        requestHanlder.setUberClient(new RestfullClient("http://uberdust.cti.gr/rest/testbed/1"));
-        requestHanlder.setWebsocketClient(SkypedustWebSocket.getInstance("ws://uberdust.cti.gr:80/readings.ws"));
-        //requestHanlder.setAllowedContacts(userAccount.getAllowedContacts());
-        userAccount.setRequestHandler(requestHanlder);
+        
+        if(userAccount.initSaccount()) {
+            
+            skypeMessenger = new SkypeMessenger(userAccount.getSession());
+        
+            requestHanlder = new CommandListener();
+            requestHanlder.setSkypeMessenger(skypeMessenger);
+            
+            requestHanlder.setAllowedContacts(dataProvider.getAllowedContacts(userAccount.userSettings.getUsername()));
+            requestHanlder.setUberClient(new RestfullClient("http://uberdust.cti.gr/rest/testbed/1"));
+            requestHanlder.setWebsocketClient(SkypedustWebSocket.getInstance("ws://uberdust.cti.gr:80/readings.ws"));
+            
+            //requestHanlder.setAllowedContacts(userAccount.getAllowedContacts());
+            
+            try {
+                userAccount.setRequestHandler(requestHanlder);
+            } catch (UserException ex) {
+                Logger.getLogger(SkypeDustManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else {
+            System.out.println("Not logged in");
+        }
         
     }
 
@@ -100,7 +115,13 @@ public class SkypeDustManager {
     }
     
     public String[] getAccountContacts() {
-        return userAccount.getAccountContacts();
+        
+        try {
+            return userAccount.getAccountContacts();
+        } catch (UserException ex) {
+            Logger.getLogger(SkypeDustManager.class.getName()).log(Level.SEVERE, null, ex);
+            return new String[] {"No Contacts"};
+        }
     }
     
     public int insertUpdateNode(String realname,String nickname){

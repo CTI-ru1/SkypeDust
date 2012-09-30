@@ -4,7 +4,6 @@
  */
 package eu.uberdust.skypedust.useraccount;
 
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 import eu.uberdust.skypedust.pojos.UserSettings;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -28,6 +27,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+
 /**
  *
  * @author Gkatziouras Emmanouil (gkatzioura)
@@ -68,6 +68,9 @@ public class XmlConfs {
         } catch (XMLStreamException | IOException ex) {
             Logger.getLogger(XmlConfs.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        System.out.println("Printing Exception");
+        
         return userSettings;
     }
     

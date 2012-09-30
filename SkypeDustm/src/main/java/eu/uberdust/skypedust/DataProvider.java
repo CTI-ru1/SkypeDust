@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,21 +32,21 @@ public class DataProvider {
     private Connection connection;
     private Statement statement;
     
-    private static final String[] createTablesQueries = new String[] {
-        "CREATE TABLE NODE(REALNAME VARCHAR(100),NICKNAME VARCHAR(100))",
-        "CREATE TABLE CAPABILITY(REALNAME VARCHAR(100),NICKNAME VARCHAR(100))",
-        "CREATE TABLE ACCOUNT(USERNAME VARCHAR(100))",
-        "CREATE TABLE ALLOWEDCONTACT(CONTACT VARCHAR(100),USERNAME VARCHAR(100))",
-        "CREATE TABLE REGISTEREDUSER(CONTACT VARCHAR(100),NODE VARCHAR(100),CAPABILITY VARCHAR(100))",
-        "CREATE TABLE PLUGIN(NAME VARCHAR(100),PATH LONG VARCHAR,TYPE VARCHAR(100))"};
+    private static final String[][] createTablesQueries = new String[][] {
+        {"NODE" ,"CREATE TABLE NODE(REALNAME VARCHAR(100),NICKNAME VARCHAR(100))"},
+        {"CAPABILITY" ,"CREATE TABLE CAPABILITY(REALNAME VARCHAR(100),NICKNAME VARCHAR(100))"},
+        {"ACCOUNT", "CREATE TABLE ACCOUNT(USERNAME VARCHAR(100))"},
+        {"ALLOWEDCONTACT","CREATE TABLE ALLOWEDCONTACT(CONTACT VARCHAR(100),USERNAME VARCHAR(100))"},
+        {"REGISTEREDUSER","CREATE TABLE REGISTEREDUSER(CONTACT VARCHAR(100),NODE VARCHAR(100),CAPABILITY VARCHAR(100))"},
+        {"PLUGIN", "CREATE TABLE PLUGIN(NAME VARCHAR(100),PATH LONG VARCHAR,TYPE VARCHAR(100))"}};
     
-    private static final String[] dropTablesQueries = new String[] {
-        "DROP TABLE NODE",
-        "DROP TABLE CAPABILITY",
-        "DROP TABLE ACCOUNT",
-        "DROP TABLE ALLOWEDCONTACT",
-        "DROP TABLE REGISTEREDUSER",
-        "DROP TABLE PLUGIN"};
+    private static final String[][] dropTablesQueries = new String[][] {
+        {"NODE","DROP TABLE NODE"},
+        {"CAPABILITY","DROP TABLE CAPABILITY"},
+        {"ACCOUNT","DROP TABLE ACCOUNT"},
+        {"ALLOWEDCONTACT","DROP TABLE ALLOWEDCONTACT"},
+        {"REGISTEREDUSER","DROP TABLE REGISTEREDUSER"},
+        {"PLUGIN","DROP TABLE PLUGIN"}};
     
     public DataProvider() {
         
@@ -67,15 +68,34 @@ public class DataProvider {
     
     private void createTables() {
         
-        for(String query: createTablesQueries) {
-            executeQuery(query);
+        try {
+            
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            for(String[] query: createTablesQueries) {
+                ResultSet resultSet = databaseMetaData.getTables(null,null,query[0],null);
+                if(!resultSet.next()) {
+                    executeQuery(query[1]);
+                }                
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     private void dropTables() {
-                    
-        for(String query: dropTablesQueries) {
-            executeQuery(query);
+        
+        try {
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            for(String[] query: dropTablesQueries) {
+                ResultSet resultSet = databaseMetaData.getTables(null,null,query[0],null);
+                if(!resultSet.next()) {
+                    executeQuery(query[1]);
+                }
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -99,11 +119,13 @@ public class DataProvider {
         try {
             
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT*FROM ACCOUNT WHERE USERNAME='"+username+"'");
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM ACCOUNT "
+                    + "WHERE USERNAME='"+username+"'");
             
             if(getnumRows(resultSet)==0){
             
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ACCOUNT(USERNAME) VALUES(?)");
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO ACCOUNT(USERNAME) VALUES(?)");
                 preparedStatement.setString(1, username);
                 return preparedStatement.executeUpdate();            
             }
