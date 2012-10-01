@@ -17,7 +17,6 @@ public class PluginSettings {
     private String description;
     private String type;
     private String path;
-    private String jarname;
 
     public String getName() {
         return name;
@@ -25,10 +24,6 @@ public class PluginSettings {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getJarname() {
-        return jarname;
     }
 
     public String getAuthor() {
@@ -61,10 +56,6 @@ public class PluginSettings {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setJarname(String jarname) {
-        this.jarname = jarname;
     }
 
     public String getPath() {

@@ -10,6 +10,22 @@ package eu.uberdust.skypedust.pojos;
  */
 public class RequestHandlerSettings extends PluginSettings{
     
-    private String requesthandler;
+    private String requestHandler;
+
+    public String getRequestHandler() {
+        return requestHandler;
+    }
+
+    public void setRequestHandler(String requestHandler) {
+        this.requestHandler = requestHandler;
+    }
+
+    public String getWebsocketHanlder() {
+        return websocketHanlder;
+    }
+
+    public void setWebsocketHanlder(String websocketHanlder) {
+        this.websocketHanlder = websocketHanlder;
+    }
     private String websocketHanlder;
 }

@@ -148,4 +148,8 @@ public class SkypeDustManager {
     public void deleteCapability(String realname) {
         dataProvider.deleteCapability(realname);
     }
+    
+    public void insertPlugin(String path) {
+        pluginManager.AddPlugin(path);
+    }
 }

@@ -56,8 +56,8 @@ public class DataProvider {
             try {
                 connection = DriverManager.getConnection(protocol+":"+dbName+";create=true");
                 //createTables();
-                dropTables();
-                createTables();
+                //dropTables();
+                //createTables();
             } catch (SQLException ex) {
                 Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
             }

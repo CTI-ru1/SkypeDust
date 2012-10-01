@@ -29,11 +29,94 @@ import org.xml.sax.SAXException;
  */
 public class PluginManager {
 
-
+    private static String settingsFile = "Settings.xml";
     
+    public static void AddPlugin(String jarpath) {
+        
+        
+        
+        /*
+        File file = new File(jarpath);
+        try {
+            URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{file.toURI().toURL()});
+            JarFile jarFile;
+
+            try {
+            
+                jarFile = new JarFile(file);
+                Enumeration<JarEntry> entries = jarFile.entries();
+                
+                while(entries.hasMoreElements()) {
+                    JarEntry jarEntry = entries.nextElement();
+                    if(jarEntry.getName().equals(settingsFile)) {
+                        
+                        InputStream inputStream = jarFile.getInputStream(jarEntry);
+                        
+                        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                        try {
+                            DocumentBuilder db = dbFactory.newDocumentBuilder();
+                            try {
+                                Document doc = db.parse(inputStream);
+                                
+                                System.out.println("Print");
+                            } catch (SAXException ex) {
+                                Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } catch (ParserConfigurationException ex) {
+                            Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+                        }                        
+                    }
+                }
+                
+            } catch (IOException ex) {
+                Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+    }
+            
+    private static PluginSettings getSettings(String jarpath) {
+        return null;
+    }
     
     /*
-    public static final String requestag = "request";
+
+    private static Class getjarClass(String jarpath,String classname) {
+    
+        File file = new File(jarpath);
+        
+        try {
+            URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{file.toURI().toURL()});
+            try {
+                JarFile jarFile = new JarFile(file);
+                Enumeration<JarEntry> entries = jarFile.entries();
+                
+                while(entries.hasMoreElements()) {
+                    JarEntry element = entries.nextElement();
+                    System.out.println(element.getName());
+                    
+                    if(element.getName().endsWith(".class")&&element.getName().contains(classname)) {
+                        try {
+                            Class c = classLoader.loadClass(element.getName().replaceAll(".class", "").replaceAll("/", "."));
+                            return c;
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
+ public static final String requestag = "request";
     
     public static void AutoMode() {
 
@@ -108,39 +191,6 @@ public class PluginManager {
                 }
             } else throw new PluginException(PluginException.notproper);
         } else throw new PluginException(PluginException.exformatter);   
-    }
-
-    private static Class getjarClass(String jarpath,String classname) {
-    
-        File file = new File(jarpath);
-        
-        try {
-            URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{file.toURI().toURL()});
-            try {
-                JarFile jarFile = new JarFile(file);
-                Enumeration<JarEntry> entries = jarFile.entries();
-                
-                while(entries.hasMoreElements()) {
-                    JarEntry element = entries.nextElement();
-                    System.out.println(element.getName());
-                    
-                    if(element.getName().endsWith(".class")&&element.getName().contains(classname)) {
-                        try {
-                            Class c = classLoader.loadClass(element.getName().replaceAll(".class", "").replaceAll("/", "."));
-                            return c;
-                        } catch (ClassNotFoundException ex) {
-                            Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return null;
     }
     
     private static void unzip(String zipath,PluginSettings pluginSettings) throws PluginException {
