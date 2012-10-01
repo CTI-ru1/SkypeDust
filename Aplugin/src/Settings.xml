@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Settings>
+    <name>Aplugin</name>
+    <author>Gkatziouras Emmanouil</author>
+    <email>gkatzioura@gmail.com</email>
+    <url>http://egkatzioura.wordpress.com</url>
+    <license>Gpl V 2.0</license>
+    <version>1.0</version>
+    <description>First Plugin</description>
+    <type>requesthandler</type>
+    <requesthandlerclass>aplugin/Aplugin</requesthandlerclass>    
+</Settings>
