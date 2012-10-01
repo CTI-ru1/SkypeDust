@@ -648,6 +648,32 @@ public class DataProvider {
         return null;
     }
     
+    public String getenabledPluginpath(String type) {
+        
+        String path = null;
+        
+        try {
+            
+            statement = connection.createStatement(
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT PATH FROM PLUGIN "
+                    + "WHERE TYPE='"+type+"' "
+                    + "AND ENABLED=TRUE");
+            
+            while(resultSet.next()) {
+                path = resultSet.getString("PATH");
+            }
+            
+            resultSet.close();
+            statement.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return path;
+    }
+    
     public int addPlugin(String name,String type,String path) {
         
         int toret = 0;

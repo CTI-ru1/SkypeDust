@@ -965,7 +965,18 @@ public class SkypeDustApp extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         
         int i = jTable2.getSelectedRow();
-        skypeDustManager.enabledisPlugin((String)plugintableModel.getValueAt(i, 0));
+        String[] plugin = skypeDustManager.enabledisPlugin((String)plugintableModel.getValueAt(i, 0));
+        if(!plugin[3].equals((String) plugintableModel.getValueAt(i, 3))) {
+            
+            plugintableModel.setValueAt(plugin[0], i, 0);
+            plugintableModel.setValueAt(plugin[1], i, 1);
+            plugintableModel.setValueAt(plugin[2], i, 2);
+            plugintableModel.setValueAt(plugin[3], i, 3);
+        }
+        else {
+        
+        }
+        
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed

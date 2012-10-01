@@ -39,14 +39,7 @@ public class SkypeDustManager {
             
             skypeMessenger = new SkypeMessenger(userAccount.getSession());
         
-            requestHanlder = new CommandListener();
-            requestHanlder.setSkypeMessenger(skypeMessenger);
-            
-            requestHanlder.setAllowedContacts(dataProvider.getAllowedContacts(userAccount.userSettings.getUsername()));
-            requestHanlder.setUberClient(new RestfullClient("http://uberdust.cti.gr/rest/testbed/1"));
-            requestHanlder.setWebsocketClient(SkypedustWebSocket.getInstance("ws://uberdust.cti.gr:80/readings.ws"));
-            
-            //requestHanlder.setAllowedContacts(userAccount.getAllowedContacts());
+            requestHanlder = getRequestHandler();
             
             try {
                 userAccount.setRequestHandler(requestHanlder);
@@ -184,32 +177,55 @@ public class SkypeDustManager {
         }
     }
     
-    public void enabledisPlugin(String name) {
+    public String[] enabledisPlugin(String name) {
+        
+        dataProvider.getenabledPluginpath(PluginManager.requesthandlertype);
         
         String[] plugin = dataProvider.getPlugin(name);
-        if(plugin[3].equals("Disabled")) {
-            if(plugin[1].equals(PluginManager.requesthandlertype)) {
+        
+        if(plugin[3].equals("Enabled")) {
             
-                System.out.println("Request Handler type");
-                try {
-                    RequestHanlder requestHanlder = PluginManager.getRequestHanlderPlugin(plugin[2]);
-                    
-                    try {
-                        userAccount.setRequestHandler(requestHanlder);
-                        System.out.println("Plugin Setted");
-                    } catch (UserException ex) {
-                        Logger.getLogger(SkypeDustManager.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
-                    
-                } catch (PluginException ex) {
-                    Logger.getLogger(SkypeDustManager.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            dataProvider.enabledisPlugin(name, Boolean.FALSE);               
+        }
+        else {
+            
+            dataProvider.enabledisPlugin(name, Boolean.TRUE);
+        }
+        
+        if(plugin[1].equals(PluginManager.requesthandlertype)) {
+            requestHanlder = getRequestHandler();
+            try {
+                userAccount.setRequestHandler(requestHanlder);
+            } catch (UserException ex) {
+                Logger.getLogger(SkypeDustManager.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        else if(plugin[3].equals("Enabled")) {
-            System.out.println("Already Disabled");
-        }        
+        
+        return dataProvider.getPlugin(name);        
+    }
+    
+    public RequestHanlder getRequestHandler() {
+        
+        RequestHanlder reqHanlder = new CommandListener();
+        
+        String pluginPath = dataProvider.getenabledPluginpath(PluginManager.requesthandlertype);
+        
+        if(pluginPath!=null) {
+            try {
+                
+                reqHanlder = PluginManager.getRequestHanlderPlugin(pluginPath);
+            } catch (PluginException ex) {
+                Logger.getLogger(SkypeDustManager.class.getName()).log(Level.SEVERE, null, ex);
+                dataProvider.enabledisPlugin(pluginPath, Boolean.FALSE);
+            }
+        }
+        
+        reqHanlder.setSkypeMessenger(skypeMessenger);            
+        reqHanlder.setAllowedContacts(dataProvider.getAllowedContacts(userAccount.userSettings.getUsername()));
+        reqHanlder.setUberClient(new RestfullClient("http://uberdust.cti.gr/rest/testbed/1"));
+        reqHanlder.setWebsocketClient(SkypedustWebSocket.getInstance("ws://uberdust.cti.gr:80/readings.ws"));
+
+        return reqHanlder;
     }
     
     public void onExit() {
