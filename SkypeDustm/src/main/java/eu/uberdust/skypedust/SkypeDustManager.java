@@ -4,11 +4,13 @@
  */
 package eu.uberdust.skypedust;
 
+import eu.uberdust.skypedust.PluginManager.PluginException;
 import eu.uberdust.skypedust.connectivity.RestfullClient;
 import eu.uberdust.skypedust.connectivity.SkypeMessenger;
 import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
 import eu.uberdust.skypedust.pojos.CapabilityNickname;
 import eu.uberdust.skypedust.pojos.NodeNickname;
+import eu.uberdust.skypedust.pojos.PluginSettings;
 import eu.uberdust.skypedust.requestformater.CommandListener;
 import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import eu.uberdust.skypedust.useraccount.UserAccount;
@@ -24,7 +26,6 @@ import java.util.logging.Logger;
 public class SkypeDustManager {
 
     private UserAccount userAccount;
-    private PluginManager pluginManager;
     private SkypeMessenger skypeMessenger;
     private DataProvider dataProvider;
     private RequestHanlder requestHanlder;
@@ -149,7 +150,69 @@ public class SkypeDustManager {
         dataProvider.deleteCapability(realname);
     }
     
-    public void insertPlugin(String path) {
-        pluginManager.AddPlugin(path);
+    public String[] insertPlugin(String path) {
+    
+        try {
+            PluginSettings  pluginSettings = PluginManager.AddPlugin(path);
+            dataProvider.addPlugin(pluginSettings.getName(), pluginSettings.getType(), pluginSettings.getPath());
+            
+            return new String[] {pluginSettings.getName(),pluginSettings.getType(),pluginSettings.getPath(),"Disabled"};
+        } catch (PluginException ex) {
+            Logger.getLogger(SkypeDustManager.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Plugin Exception");
+        }
+        
+        return null;
+    }
+    
+    public String[][] getPlugins() {
+        
+        String[][] plugins = dataProvider.getPlugins();
+        
+        return plugins;
+    }
+    
+    public boolean removePlugin(String name,String path) {
+    
+        if(PluginManager.RemovePlugin(path)) {
+        
+            dataProvider.removePlugin(name);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    public void enabledisPlugin(String name) {
+        
+        String[] plugin = dataProvider.getPlugin(name);
+        if(plugin[3].equals("Disabled")) {
+            if(plugin[1].equals(PluginManager.requesthandlertype)) {
+            
+                System.out.println("Request Handler type");
+                try {
+                    RequestHanlder requestHanlder = PluginManager.getRequestHanlderPlugin(plugin[2]);
+                    
+                    try {
+                        userAccount.setRequestHandler(requestHanlder);
+                        System.out.println("Plugin Setted");
+                    } catch (UserException ex) {
+                        Logger.getLogger(SkypeDustManager.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    
+                } catch (PluginException ex) {
+                    Logger.getLogger(SkypeDustManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        else if(plugin[3].equals("Enabled")) {
+            System.out.println("Already Disabled");
+        }        
+    }
+    
+    public void onExit() {
+        dataProvider.close();
     }
 }

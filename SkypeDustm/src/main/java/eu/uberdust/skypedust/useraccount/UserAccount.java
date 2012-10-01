@@ -6,7 +6,6 @@ package eu.uberdust.skypedust.useraccount;
 
 import com.skype.api.Contact;
 import com.skype.api.ContactGroup;
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 import eu.uberdust.skypedust.FileManage;
 import eu.uberdust.skypedust.LogFiles;
 import eu.uberdust.skypedust.appkeypair.AppKeyPairMgr;
@@ -14,7 +13,6 @@ import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
 import eu.uberdust.skypedust.connectivity.VoipListener;
 import eu.uberdust.skypedust.pojos.UserSettings;
 import eu.uberdust.skypedust.requestformater.RequestHanlder;
-import eu.uberdust.skypedust.ui.SkypeDustApp;
 import eu.uberdust.skypedust.util.MySession;
 import java.io.*;
 import java.security.InvalidKeyException;

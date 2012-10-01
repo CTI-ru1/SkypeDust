@@ -38,7 +38,7 @@ public class DataProvider {
         {"ACCOUNT", "CREATE TABLE ACCOUNT(USERNAME VARCHAR(100))"},
         {"ALLOWEDCONTACT","CREATE TABLE ALLOWEDCONTACT(CONTACT VARCHAR(100),USERNAME VARCHAR(100))"},
         {"REGISTEREDUSER","CREATE TABLE REGISTEREDUSER(CONTACT VARCHAR(100),NODE VARCHAR(100),CAPABILITY VARCHAR(100))"},
-        {"PLUGIN", "CREATE TABLE PLUGIN(NAME VARCHAR(100),TYPE VARCHAR(100)),PATH LONG VARCHAR,ENABLED BOOLEAN"}};
+        {"PLUGIN", "CREATE TABLE PLUGIN(NAME VARCHAR(100),TYPE VARCHAR(100),PATH VARCHAR(3200),ENABLED BOOLEAN)"}};
     
     private static final String[][] dropTablesQueries = new String[][] {
         {"NODE","DROP TABLE NODE"},
@@ -55,7 +55,6 @@ public class DataProvider {
             connection = null;
             try {
                 connection = DriverManager.getConnection(protocol+":"+dbName+";create=true");
-                //createTables();
                 //dropTables();
                 //createTables();
             } catch (SQLException ex) {
@@ -591,7 +590,7 @@ public class DataProvider {
             
             while(resultSet.next()) {
                 
-                String[] plugin = new String[3];
+                String[] plugin = new String[4];
                 plugin[0] = resultSet.getString("NAME");
                 plugin[1] = resultSet.getString("TYPE");
                 plugin[2] = resultSet.getString("PATH");
@@ -617,6 +616,38 @@ public class DataProvider {
         return null;
     }
     
+    public String[] getPlugin(String name) {
+        
+        try {
+            statement = connection.createStatement(
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM PLUGIN "
+                    + "WHERE NAME='"+name+"'");
+            String[] plugin = new String[4];
+            while(resultSet.next()) {
+                plugin[0] = resultSet.getString("NAME");
+                plugin[1] = resultSet.getString("TYPE");
+                plugin[2] = resultSet.getString("PATH");
+                if(resultSet.getBoolean("ENABLED")) {
+                    plugin[3] = "Enabled";
+                } 
+                else {
+                    plugin[3] = "Disabled";
+                }
+            }
+            
+            resultSet.close();
+            statement.close();
+            
+            return plugin;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
     public int addPlugin(String name,String type,String path) {
         
         int toret = 0;
@@ -625,7 +656,8 @@ public class DataProvider {
             statement = connection.createStatement(
                     ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
             ResultSet resultSet = statement.executeQuery("SELECT*FROM PLUGIN "
-                    + "WHERE NAME='"+name+"'");
+                    + "WHERE NAME='"+name+"' "
+                    + "OR PATH='"+path+"'");
             
             if(getnumRows(resultSet)==0) {
                 
@@ -635,7 +667,7 @@ public class DataProvider {
                 preparedStatement.setString(2,type);
                 preparedStatement.setString(3,path);
                 preparedStatement.setBoolean(4, false);
-                toret  = preparedStatement.executeUpdate(); 
+                toret = preparedStatement.executeUpdate(); 
             }
             
             resultSet.close();

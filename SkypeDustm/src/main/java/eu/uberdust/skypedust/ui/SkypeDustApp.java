@@ -4,35 +4,20 @@
  */
 package eu.uberdust.skypedust.ui;
 
-import eu.uberdust.skypedust.FileManage;
 import eu.uberdust.skypedust.LogFiles;
-import eu.uberdust.skypedust.PluginManager;
 import eu.uberdust.skypedust.SkypeDustManager;
-import eu.uberdust.skypedust.useraccount.UserAccount;
-import java.awt.CardLayout;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import javax.swing.DefaultListModel;
-import javax.swing.JDialog;
-import javax.swing.table.DefaultTableModel;
-import eu.uberdust.skypedust.connectivity.SkypedustWebSocket;
 import eu.uberdust.skypedust.pojos.CapabilityNickname;
 import eu.uberdust.skypedust.pojos.NodeNickname;
-import eu.uberdust.skypedust.pojos.PluginSettings;
-import eu.uberdust.skypedust.requestformater.RequestHanlder;
-import java.awt.Image;
+import eu.uberdust.skypedust.useraccount.UserAccount;
+import java.awt.CardLayout;
 import java.awt.Toolkit;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ImageIcon;
+import javax.swing.DefaultListModel;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.ListModel;
-import javax.swing.filechooser.FileFilter;
-import sun.awt.image.ToolkitImage;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -64,6 +49,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
             setAllowedList(skypeDustManager.getAllowedContacts());
             setNodeTable(skypeDustManager.getnodesShortName());
             setCapabilityTable(skypeDustManager.getcapablityShortName());
+            setPluginsTable(skypeDustManager.getPlugins());
         }
         this.addWindowListener(winlistener);
     }
@@ -201,7 +187,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel4)))
-                .addContainerGap(280, Short.MAX_VALUE))
+                .addContainerGap(298, Short.MAX_VALUE))
         );
         skypeFriendPanelLayout.setVerticalGroup(
             skypeFriendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -218,7 +204,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton10)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         mainPanel.add(skypeFriendPanel, "card3");
@@ -243,7 +229,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
                     .addComponent(jToggleButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
         skypeMessagePanel1Layout.setVerticalGroup(
             skypeMessagePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -254,7 +240,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jToggleButton1)
-                .addContainerGap(123, Short.MAX_VALUE))
+                .addContainerGap(125, Short.MAX_VALUE))
         );
 
         mainPanel.add(skypeMessagePanel1, "card4");
@@ -300,7 +286,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                         .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(281, Short.MAX_VALUE))
+                .addContainerGap(294, Short.MAX_VALUE))
         );
         settingsPanelLayout.setVerticalGroup(
             settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -319,7 +305,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                     .addComponent(jButton11))
                 .addGap(27, 27, 27)
                 .addComponent(asyncmsgCheckBox)
-                .addContainerGap(271, Short.MAX_VALUE))
+                .addContainerGap(278, Short.MAX_VALUE))
         );
 
         mainPanel.add(settingsPanel, "card5");
@@ -330,8 +316,13 @@ public class SkypeDustApp extends javax.swing.JFrame {
         jScrollPane4.setViewportView(jTable2);
 
         jButton3.setText("Remove");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
-        jButton4.setText("Enable");
+        jButton4.setText("Enable/Disable");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -369,15 +360,15 @@ public class SkypeDustApp extends javax.swing.JFrame {
                         .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pluginsPanelLayout.createSequentialGroup()
+                    .addGroup(pluginsPanelLayout.createSequentialGroup()
                         .addGap(187, 187, 187)
                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 654, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
         pluginsPanelLayout.setVerticalGroup(
             pluginsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -394,7 +385,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                     .addComponent(jButton3)
                     .addComponent(jButton4)
                     .addComponent(jLabel10))
-                .addContainerGap(92, Short.MAX_VALUE))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
 
         mainPanel.add(pluginsPanel, "card8");
@@ -463,7 +454,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                                     .addComponent(jLabel7)
                                     .addGap(217, 217, 217)
                                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
         nodePanelLayout.setVerticalGroup(
             nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -482,7 +473,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton12)
                     .addComponent(jButton13))
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
 
         mainPanel.add(nodePanel, "card5");
@@ -547,7 +538,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                                 .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(51, 51, 51)
                                 .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
         capabilityPanelLayout.setVerticalGroup(
             capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -566,7 +557,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addGroup(capabilityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton14)
                     .addComponent(jButton15))
-                .addContainerGap(77, Short.MAX_VALUE))
+                .addContainerGap(79, Short.MAX_VALUE))
         );
 
         mainPanel.add(capabilityPanel, "card6");
@@ -630,7 +621,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                     .addComponent(jLabel3))
                 .addGap(29, 29, 29)
                 .addComponent(jButton1)
-                .addContainerGap(196, Short.MAX_VALUE))
+                .addContainerGap(198, Short.MAX_VALUE))
         );
 
         mainPanel.add(skypeAccountPanel, "card2");
@@ -742,7 +733,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 740, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -752,7 +743,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addGap(0, 452, Short.MAX_VALUE)
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE))
         );
 
         pack();
@@ -972,11 +963,14 @@ public class SkypeDustApp extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        
+        int i = jTable2.getSelectedRow();
+        skypeDustManager.enabledisPlugin((String)plugintableModel.getValueAt(i, 0));
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        skypeDustManager.insertPlugin(jTextField7.getText());
+        String[] plugin = skypeDustManager.insertPlugin(jTextField7.getText());
+        plugintableModel.addRow(plugin);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jTextField7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField7MouseClicked
@@ -984,6 +978,18 @@ public class SkypeDustApp extends javax.swing.JFrame {
         String path = jFileChooser.getSelectedFile().getAbsolutePath();
         jTextField7.setText(path);
     }//GEN-LAST:event_jTextField7MouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        
+        int i = jTable2.getSelectedRow();
+        
+        if(skypeDustManager.removePlugin(
+                (String) plugintableModel.getValueAt(i, 0),
+                (String) plugintableModel.getValueAt(i, 2))) {
+            plugintableModel.removeRow(i);
+        }
+        
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void setNodeTable(List<NodeNickname> nodeShortnames) {
         
@@ -1030,6 +1036,13 @@ public class SkypeDustApp extends javax.swing.JFrame {
     
     public String[] getAllowedList() {
         return null;
+    }
+
+    private void setPluginsTable(String[][] plugins) {
+        
+        for(String[] plugin: plugins) {
+            plugintableModel.addRow(plugin);
+        }
     }
     
     private WindowListener winlistener = new WindowListener() {

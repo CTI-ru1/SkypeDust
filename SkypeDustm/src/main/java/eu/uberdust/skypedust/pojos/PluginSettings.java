@@ -12,7 +12,9 @@ public class PluginSettings {
 
     private String name;
     private String author;
-    private String lisence;
+    private String email;
+    private String url;
+    private String license;
     private String version;
     private String description;
     private String type;
@@ -34,12 +36,12 @@ public class PluginSettings {
         this.author = author;
     }
 
-    public String getLisence() {
-        return lisence;
+    public String getLicense() {
+        return license;
     }
 
-    public void setLisence(String lisence) {
-        this.lisence = lisence;
+    public void setLicense(String license) {
+        this.license = license;
     }
 
     public String getVersion() {
@@ -73,4 +75,21 @@ public class PluginSettings {
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    
 }
