@@ -32,14 +32,14 @@ public class SkypedustWebSocket extends UberdustClient implements Observer {
         return instance;
     }
     
-    private SkypedustWebSocket() {
-        WSReadingsClient.getInstance().addObserver(this);
+    private SkypedustWebSocket() {        
     }
 
     public void subscribeUpdate(String contact,String node,String capability) {
                         
-        WSReadingsClient.getInstance().subscribe(node, getcapabilityName(capability));
-           
+        WSReadingsClient.getInstance().subscribe(getnodeName(node), getcapabilityName(capability));
+        WSReadingsClient.getInstance().addObserver(this);   
+        
         subscribeUser(node, capability, contact);
     }
     
@@ -47,6 +47,8 @@ public class SkypedustWebSocket extends UberdustClient implements Observer {
         
         DataProvider dataProvider = new DataProvider();
         dataProvider.insertRegisteredContact(contact, node, capability);
+        System.out.println(node+"\n"+capability+"\n"+contact);
+        
         dataProvider.close();
     }
     
@@ -62,9 +64,20 @@ public class SkypedustWebSocket extends UberdustClient implements Observer {
         if( arg instanceof Message.NodeReadings) {
             Message.NodeReadings reading =(Message.NodeReadings)arg;
         
-            String node = new String(reading.getReading(0).getNode());
-            String capability = new String(reading.getReading(0).getCapability());
+            final String node = new String(reading.getReading(0).getNode());
+            final String capability = new String(reading.getReading(0).getCapability());
+            
+            
+            /*
+            new Thread(new Runnable() {
 
+                @Override
+                public void run() {
+                    skypeMessenger.sendMessage(new String[] {"mangkatz"},"Node "+ node+"Capability "+capability );            
+                }
+            }).start();*/
+            
+            /*
             DataProvider dataProvider = new DataProvider();            
             String[] contacts = dataProvider.getRegisteredContacts(node,capability);
             dataProvider.close();
@@ -75,7 +88,7 @@ public class SkypedustWebSocket extends UberdustClient implements Observer {
                         " reading "+
                         reading.getReading(0).getStringReading());
                 dataProvider.close();
-            }
+            }*/
         }
     }
 }

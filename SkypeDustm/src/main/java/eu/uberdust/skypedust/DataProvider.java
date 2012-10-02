@@ -12,12 +12,12 @@ package eu.uberdust.skypedust;
 import eu.uberdust.skypedust.pojos.CapabilityNickname;
 import eu.uberdust.skypedust.pojos.NodeNickname;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -56,7 +56,7 @@ public class DataProvider {
             try {
                 connection = DriverManager.getConnection(protocol+":"+dbName+";create=true");
                 //dropTables();
-                //createTables();
+                createTables();
             } catch (SQLException ex) {
                 Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
             }

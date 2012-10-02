@@ -70,6 +70,7 @@ public class CommandListener implements RequestHanlder {
                 
                 if(commands[0].equals("websocket")&commands[1].equals("node")) {
                     skypedustWebSocket.subscribeUpdate(author,commands[2],commands[3]);
+                    toret = "You have been subscribed";
                 }
 
             }
@@ -130,7 +131,9 @@ public class CommandListener implements RequestHanlder {
                 switch (commands[0]){
                     case "websocket":
                         System.out.println("testing web socket");
-                        skypeMessenger.sendMessage(new String[] {author},"sdasdadas");
+                        //skypedustWebSocket.subscribeUpdate(author ,, body);
+                        toret = "You have been subscribed to Updates";
+                        //skypeMessenger.sendMessage(new String[] {author},"sdasdadas");
                     case "help":
                         toret = "SkypeDust 1.01\n"+
                         "help: without arguments displays an intro message and displays a list with commands that help getting started."+
