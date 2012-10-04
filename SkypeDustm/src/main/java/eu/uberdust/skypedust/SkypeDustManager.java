@@ -51,6 +51,12 @@ public class SkypeDustManager {
             System.out.println("Not logged in");
         }
         
+        /*
+        dataProvider.userSubscribe("okas", "dksk", "lala");
+        dataProvider.getSubsribed();
+        System.out.println("Unsubscribing");
+        dataProvider.userUnsubscribe("asd", "dksk", "lala");
+        */
     }
 
     public UserAccount getUserAccount() {

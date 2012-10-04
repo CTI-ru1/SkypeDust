@@ -37,7 +37,7 @@ public class DataProvider {
         {"CAPABILITY" ,"CREATE TABLE CAPABILITY(REALNAME VARCHAR(100),NICKNAME VARCHAR(100))"},
         {"ACCOUNT", "CREATE TABLE ACCOUNT(USERNAME VARCHAR(100))"},
         {"ALLOWEDCONTACT","CREATE TABLE ALLOWEDCONTACT(CONTACT VARCHAR(100),USERNAME VARCHAR(100))"},
-        {"REGISTEREDUSER","CREATE TABLE REGISTEREDUSER(CONTACT VARCHAR(100),NODE VARCHAR(100),CAPABILITY VARCHAR(100))"},
+        {"CONTACTSUBSCRIBED","CREATE TABLE CONTACTSUBSCRIBED(CONTACT VARCHAR(100),NODE VARCHAR(100),CAPABILITY VARCHAR(100))"},
         {"PLUGIN", "CREATE TABLE PLUGIN(NAME VARCHAR(100),TYPE VARCHAR(100),PATH VARCHAR(3200),ENABLED BOOLEAN)"}};
     
     private static final String[][] dropTablesQueries = new String[][] {
@@ -45,7 +45,7 @@ public class DataProvider {
         {"CAPABILITY","DROP TABLE CAPABILITY"},
         {"ACCOUNT","DROP TABLE ACCOUNT"},
         {"ALLOWEDCONTACT","DROP TABLE ALLOWEDCONTACT"},
-        {"REGISTEREDUSER","DROP TABLE REGISTEREDUSER"},
+        {"CONTACTSUBSCRIBED","DROP TABLE CONTACTSUBSCRIBED"},
         {"PLUGIN","DROP TABLE PLUGIN"}};
     
     public DataProvider() {
@@ -259,10 +259,8 @@ public class DataProvider {
             ResultSet resultSet = statement.executeQuery("SELECT*FROM NODE "
                     + "WHERE REALNAME='"+realname+"'");
             
-            if(getnumRows(resultSet)!=0) {
-                while(resultSet.next()) {
-                    toret = resultSet.getString("NICKNAME");
-                }
+            while(resultSet.next()) {
+                toret = resultSet.getString("NICKNAME");
             }
             
             resultSet.close();
@@ -282,12 +280,10 @@ public class DataProvider {
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
             ResultSet resultSet = statement.executeQuery("SELECT*FROM NODE "
                     + "WHERE NICKNAME='"+shortname+"'");
-            if(getnumRows(resultSet)!=0) {
-                while(resultSet.next()) {
-                    toret = resultSet.getString("REALNAME");
-                }
-            }
             
+            while(resultSet.next()) {
+                toret = resultSet.getString("REALNAME");
+            }
             resultSet.close();
             statement.close();
             
@@ -320,6 +316,100 @@ public class DataProvider {
         }
         
         return false;
+    }
+    
+    public int userSubscribe(String contact,String node,String capability) {
+        
+        int toret = 0;
+        try {
+            
+            
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM CONTACTSUBSCRIBED "
+                    + "WHERE CONTACT='"+contact+"' "
+                    + "AND NODE='"+node+"' "
+                    + "AND CAPABILITY='"+capability+"'");
+            if(getnumRows(resultSet)==0) {
+            
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "INSERT INTO CONTACTSUBSCRIBED(CONTACT,NODE,CAPABILITY) VALUES(?,?,?)");
+                preparedStatement.setString(1, contact);
+                preparedStatement.setString(2, node);
+                preparedStatement.setString(3, capability);
+                toret = preparedStatement.executeUpdate();
+                preparedStatement.close();
+            }
+            
+            resultSet.close();
+            statement.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+        
+        return toret;
+    }
+    
+    public void userUnsubscribe(String contact,String node,String capability) {
+        try {
+            
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM CONTACTSUBSCRIBED "
+                    + "WHERE CONTACT='"+contact+"' "
+                    + "AND NODE='"+node+"' "
+                    + "AND CAPABILITY='"+capability+"'");
+            
+            while(resultSet.next()) {
+                resultSet.deleteRow();
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void getSubsribed() {
+        
+        try {
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM CONTACTSUBSCRIBED");
+            while(resultSet.next()) {
+                System.out.println(resultSet.getString("CONTACT"));
+                System.out.println(resultSet.getString("NODE"));
+                System.out.println(resultSet.getString("CAPABILITy"));
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
+    public String[] getSubscribedContacts(String node,String capability) {
+
+        try {
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT*FROM CONTACTSUBSCRIBED "
+                    + "WHERE NODE='"+node+"' "
+                    + "AND CAPABILITY='"+capability+"'");
+            
+            System.out.println("node "+node+" capability "+capability);
+
+            List<String> contacts = new ArrayList<>();
+            
+            while(resultSet.next()) {
+                
+                contacts.add(resultSet.getString("CONTACT"));
+            }
+            
+            return contacts.toArray(new String[contacts.size()]);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
     }
     
     public int insertupdateCapability(String realname,String nickname) {
@@ -503,82 +593,7 @@ public class DataProvider {
         
         return null;
     }
-    
-    public int insertRegisteredContact(String contact,String node,String capability) {
         
-        int toret = 0;
-            
-        try {
-            
-            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
-            
-            ResultSet resultSet = statement.executeQuery("SELECT*FROM REGISTEREDUSER "+
-                    "WHERE CONTACT='"+contact+"' "+
-                    "AND NODE='"+node+"' "+
-                    "AND CAPABILITY='"+capability+"'");
-            
-            if(getnumRows(resultSet)==0) {
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO REGISTEREDUSER(CONTACT,NODE,CAPABILITY) VALUES(?,?,?)");
-                preparedStatement.setString(1, contact);
-                preparedStatement.setString(2, node);
-                preparedStatement.setString(3, capability);
-                toret  = preparedStatement.executeUpdate();
-               
-            }
-            
-            resultSet.close();
-            statement.close();
-            
-            return toret;
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return 0;
-    }
-    
-    public String[] getRegisteredContacts(String node,String capability) {
-        
-        System.out.println(node);
-        System.out.println(capability);
-        
-        //return new String[] {node,capability,"mangkatz"};
-        
-        
-        try {
-            statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(
-                    "SELECT*FROM REGISTEREDUSER "+
-                    "WHERE NODE='"+node+"' "+
-                    "AND CAPABILITY='"+capability+"'");
-            
-            //List<String> contacts = new ArrayList<String>();
-            
-            int i = getnumRows(resultSet);
-            
-            String[] contacts = new String[i];
-            
-            while(resultSet.next()) {
-                //String contact = resultSet.getString("CONTACT");
-                //System.out.println("The contact: "+contact);
-                //contacts.add(contact);
-                contacts[i--] = resultSet.getString("CONTACT");
-            }
-            
-            resultSet.close();
-            statement.close();
-            
-            return contacts;
-            //return contacts.toArray(new String[contacts.size()]);
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return null;
-    }
-    
     public String[][] getPlugins() {
         
         try {
