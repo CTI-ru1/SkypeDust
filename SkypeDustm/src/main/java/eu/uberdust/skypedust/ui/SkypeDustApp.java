@@ -35,23 +35,22 @@ public class SkypeDustApp extends javax.swing.JFrame {
         initComponents();
         this.setTitle(title);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage("eu/uberdust/skypedust/ui/skype.png"));
-
+        
         jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         
         skypeDustManager = new SkypeDustManager();
+        
+        
         userAccount = skypeDustManager.getUserAccount();
-       
+
         if(userAccount.userSettings!=null){
             usernameTextField.setText(userAccount.userSettings.getUsername());
             nicknameTextField.setText(userAccount.userSettings.getNickname());
-            passwordPasswordField.setText(userAccount.userSettings.getPassword());
-            setContactList(skypeDustManager.getAccountContacts());
-            setAllowedList(skypeDustManager.getAllowedContacts());
-            setNodeTable(skypeDustManager.getnodesShortName());
-            setCapabilityTable(skypeDustManager.getcapablityShortName());
-            setPluginsTable(skypeDustManager.getPlugins());
+            passwordPasswordField.setText(userAccount.userSettings.getPassword());        
         }
+
         this.addWindowListener(winlistener);
+        cardSwitcher("card2");        
     }
     
     //@Override
@@ -574,7 +573,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
 
         passwordPasswordField.setText("jPasswordField1");
 
-        jButton1.setText("Save Settings");
+        jButton1.setText("Login");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -588,7 +587,6 @@ public class SkypeDustApp extends javax.swing.JFrame {
             .addGroup(skypeAccountPanelLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
                 .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(skypeAccountPanelLayout.createSequentialGroup()
                             .addComponent(jLabel2)
@@ -601,7 +599,8 @@ public class SkypeDustApp extends javax.swing.JFrame {
                         .addGroup(skypeAccountPanelLayout.createSequentialGroup()
                             .addComponent(jLabel1)
                             .addGap(86, 86, 86)
-                            .addComponent(usernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(usernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(136, Short.MAX_VALUE))
         );
         skypeAccountPanelLayout.setVerticalGroup(
@@ -743,7 +742,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
                 .addGap(0, 452, Short.MAX_VALUE)
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE))
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -791,6 +790,7 @@ public class SkypeDustApp extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         skypeDustManager.setUserAccount(usernameTextField.getText(),nicknameTextField.getText(),passwordPasswordField.getText());
+        setFields();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -1002,6 +1002,18 @@ public class SkypeDustApp extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void setFields() {
+        
+        if(userAccount.userSettings!=null){
+
+            setContactList(skypeDustManager.getAccountContacts());
+            setAllowedList(skypeDustManager.getAllowedContacts());
+            setNodeTable(skypeDustManager.getnodesShortName());
+            setCapabilityTable(skypeDustManager.getcapablityShortName());
+            setPluginsTable(skypeDustManager.getPlugins());
+        }    
+    }
+    
     private void setNodeTable(List<NodeNickname> nodeShortnames) {
         
         for(NodeNickname nodeShortname : nodeShortnames) {
@@ -1023,8 +1035,20 @@ public class SkypeDustApp extends javax.swing.JFrame {
     }
     
     private void cardSwitcher(String card){
+        
         CardLayout cardLayout = (CardLayout)(mainPanel.getLayout());
-        cardLayout.show(mainPanel,card);
+        if(skypeDustManager.isLoggedIn()) {
+            cardLayout.show(mainPanel,card);
+        }
+        else {
+            if(card!="card2") {
+                cardLayout.show(mainPanel,"card2");
+                SkypeDustProbBox skypeDustProbBox = new SkypeDustProbBox(this, rootPaneCheckingEnabled);
+                skypeDustProbBox.setTitleBody("Not Logged In","You have to login first!");
+                JDialog jDialog = skypeDustProbBox;
+                jDialog.show();
+            }
+        }
     }
     
     public void setContactList(String[] constring){

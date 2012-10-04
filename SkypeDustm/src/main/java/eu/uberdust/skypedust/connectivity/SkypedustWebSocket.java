@@ -17,7 +17,6 @@ import java.util.Observer;
 public class SkypedustWebSocket extends UberdustClient implements Observer {
 
     private static SkypedustWebSocket instance = null;
-    private Map<String,List<String>> registeredUsers = new HashMap<>();
     
     public static SkypedustWebSocket getInstance(String webSocketread) {
         synchronized (SkypedustWebSocket.class) {

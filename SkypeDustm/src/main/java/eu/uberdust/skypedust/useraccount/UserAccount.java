@@ -41,6 +41,7 @@ public class UserAccount {
     
     FileManage fileManage = new FileManage();
     public UserSettings userSettings;
+    public boolean LoggedIn = false;
     private XmlConfs xmlConfs;
     private RequestHanlder cmdListener;
     private VoipListener voipListener;
@@ -60,11 +61,6 @@ public class UserAccount {
         userSettings.setUsername(username);
         userSettings.setNickname(nickname);
         userSettings.setNickname(password);
-    }
-    
-    public void logoutAccount() {
-        mySession.myAccount.Logout(true);
-        mySession.doTearDownSession();
     }
     
     public void setRequestHandler(RequestHanlder requestHandler) throws UserException {
@@ -160,9 +156,18 @@ public class UserAccount {
     private void sessionSignin() throws UserException {
         
         try {
+            
+            System.out.println("User settings "+userSettings.getUsername()+" "+userSettings.getPassword());
+            
             mySession.doCreateSession(null,userSettings.getUsername().toString(), appKeyPairMgr);
-            if(!mySession.mySignInMgr.Login(null, mySession,userSettings.getPassword().toString()))
+            
+
+            if(!mySession.mySignInMgr.Login(null, mySession,userSettings.getPassword().toString())) {
                 throw new UserException(UserException.WrongCredentials);
+            }
+            else {
+                LoggedIn = true;
+            }
         }
         catch(NullPointerException ex) {
             Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
@@ -207,10 +212,17 @@ public class UserAccount {
         }
     }
     
-    public void stopSaccount(){
+    public boolean stopSaccount(){
         
-        mySession.mySignInMgr.Logout(null, mySession);
-        LogFiles.writeLoginLog(userSettings.getUsername(),1);
+        if(mySession.isLoggedIn()) {
+            mySession.mySignInMgr.Logout(null, mySession);
+            mySession.doTearDownSession();
+            LogFiles.writeLoginLog(userSettings.getUsername(),1);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     
     public void saveAllowedContact(String contact) {

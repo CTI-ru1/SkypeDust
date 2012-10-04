@@ -11,6 +11,9 @@ import eu.uberdust.skypedust.requestformater.CommandListener;
 import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import eu.uberdust.skypedust.useraccount.UserAccount;
 import eu.uberdust.skypedust.useraccount.UserException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,12 +32,14 @@ public class SkypeDustManager {
     public SkypeDustManager() {
         
         userAccount = new UserAccount();
-        dataProvider = new DataProvider();
-        
-        if(userAccount.initSaccount()) {
+        dataProvider = new DataProvider();        
+    }
+
+    private void startAccount() {
+    
+       if(userAccount.initSaccount()) {
             
             skypeMessenger = new SkypeMessenger(userAccount.getSession());
-        
             requestHanlder = getRequestHandler();
             
             try {
@@ -46,15 +51,8 @@ public class SkypeDustManager {
         else {
             System.out.println("Not logged in");
         }
-        
-        /*
-        dataProvider.userSubscribe("okas", "dksk", "lala");
-        dataProvider.getSubsribed();
-        System.out.println("Unsubscribing");
-        dataProvider.userUnsubscribe("asd", "dksk", "lala");
-        */
     }
-
+    
     public UserAccount getUserAccount() {
         return userAccount;
     }
@@ -65,17 +63,19 @@ public class SkypeDustManager {
 
     public void setUserAccount(String username,String nickname,String password) {
 
-        //userAccount.logoutAccount();
         userAccount.setAccount(username, nickname, password);
         dataProvider.insertAccount(username);
-        //userAccount.initSaccount();
-        
-        /*
-        userAccount.stopSaccount();
-        userAccount = new UserAccount();
-        userAccount.setAccount(username, nickname, password);
-        userAccount.initSaccount();
-        */
+
+        if(userAccount.stopSaccount()) {
+            restartApplication(null);
+        }
+        else {
+            startAccount();
+        }
+    }
+    
+    public boolean isLoggedIn() {
+        return userAccount.LoggedIn;
     }
     
     private void refreshContacts() {
@@ -230,7 +230,55 @@ public class SkypeDustManager {
         return reqHanlder;
     }
     
+    private static void restartApplication(Runnable specialAction) {
+    
+        String java = System.getProperty("java.home") + "/bin/java";
+	List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+	StringBuffer vmArgsOneLine = new StringBuffer();
+	for (String arg : vmArguments) {
+            if (!arg.contains("-agentlib")) {
+                vmArgsOneLine.append(arg);
+                vmArgsOneLine.append(" ");
+            }
+	}
+	
+        final StringBuffer cmd = new StringBuffer(java + " " + vmArgsOneLine);
+
+	String[] mainCommand = System.getProperty("sun.java.command").split(" ");
+	
+        if (mainCommand[0].endsWith(".jar")) {
+	
+            cmd.append("-jar " + new File(mainCommand[0]).getPath());
+	} else {
+	
+            cmd.append("-cp \"" + System.getProperty("java.class.path") + "\" " + mainCommand[0]);
+	}
+	
+        for (int i = 1; i < mainCommand.length; i++) {
+            cmd.append(" ");
+            cmd.append(mainCommand[i]);
+	}
+	
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+		try {
+                    Runtime.getRuntime().exec(cmd.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+		}
+            }
+	});
+        
+        if (specialAction!= null) {
+            specialAction.run();
+	}
+	
+        System.exit(0);
+    }
+    
     public void onExit() {
         dataProvider.close();
+        userAccount.stopSaccount();
     }
 }
