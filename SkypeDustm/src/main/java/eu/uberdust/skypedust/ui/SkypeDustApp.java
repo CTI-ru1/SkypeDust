@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package eu.uberdust.skypedust.ui;
 
 import eu.uberdust.skypedust.LogFiles;
@@ -66,6 +62,14 @@ public class SkypeDustApp extends javax.swing.JFrame {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
+        skypeAccountPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        usernameTextField = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        nicknameTextField = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        passwordPasswordField = new javax.swing.JPasswordField();
+        jButton1 = new javax.swing.JButton();
         skypeFriendPanel = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -115,14 +119,6 @@ public class SkypeDustApp extends javax.swing.JFrame {
         jTextField6 = new javax.swing.JTextField();
         jButton14 = new javax.swing.JButton();
         jButton15 = new javax.swing.JButton();
-        skypeAccountPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        usernameTextField = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        nicknameTextField = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        passwordPasswordField = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         jLabel15 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
@@ -145,6 +141,70 @@ public class SkypeDustApp extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         mainPanel.setLayout(new java.awt.CardLayout());
+
+        jLabel1.setText("Skype Username");
+
+        usernameTextField.setText("Your Username");
+
+        jLabel2.setText("Nickname Displayed");
+
+        nicknameTextField.setText("Your Nickname");
+
+        jLabel3.setText("Password");
+
+        passwordPasswordField.setText("jPasswordField1");
+
+        jButton1.setText("Login");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout skypeAccountPanelLayout = new javax.swing.GroupLayout(skypeAccountPanel);
+        skypeAccountPanel.setLayout(skypeAccountPanelLayout);
+        skypeAccountPanelLayout.setHorizontalGroup(
+            skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(skypeAccountPanelLayout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(skypeAccountPanelLayout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(nicknameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(skypeAccountPanelLayout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(passwordPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(skypeAccountPanelLayout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addGap(86, 86, 86)
+                            .addComponent(usernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(136, Short.MAX_VALUE))
+        );
+        skypeAccountPanelLayout.setVerticalGroup(
+            skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(skypeAccountPanelLayout.createSequentialGroup()
+                .addGap(98, 98, 98)
+                .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(usernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(28, 28, 28)
+                .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nicknameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(28, 28, 28)
+                .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(passwordPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(29, 29, 29)
+                .addComponent(jButton1)
+                .addContainerGap(198, Short.MAX_VALUE))
+        );
+
+        mainPanel.add(skypeAccountPanel, "card2");
 
         jLabel4.setText("Contacts");
 
@@ -560,70 +620,6 @@ public class SkypeDustApp extends javax.swing.JFrame {
         );
 
         mainPanel.add(capabilityPanel, "card6");
-
-        jLabel1.setText("Skype Username");
-
-        usernameTextField.setText("Your Username");
-
-        jLabel2.setText("Nickname Displayed");
-
-        nicknameTextField.setText("Your Nickname");
-
-        jLabel3.setText("Password");
-
-        passwordPasswordField.setText("jPasswordField1");
-
-        jButton1.setText("Login");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout skypeAccountPanelLayout = new javax.swing.GroupLayout(skypeAccountPanel);
-        skypeAccountPanel.setLayout(skypeAccountPanelLayout);
-        skypeAccountPanelLayout.setHorizontalGroup(
-            skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(skypeAccountPanelLayout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(skypeAccountPanelLayout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(nicknameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(skypeAccountPanelLayout.createSequentialGroup()
-                            .addComponent(jLabel3)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(passwordPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(skypeAccountPanelLayout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addGap(86, 86, 86)
-                            .addComponent(usernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(136, Short.MAX_VALUE))
-        );
-        skypeAccountPanelLayout.setVerticalGroup(
-            skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(skypeAccountPanelLayout.createSequentialGroup()
-                .addGap(98, 98, 98)
-                .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(usernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(28, 28, 28)
-                .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nicknameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(28, 28, 28)
-                .addGroup(skypeAccountPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(passwordPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addGap(29, 29, 29)
-                .addComponent(jButton1)
-                .addContainerGap(198, Short.MAX_VALUE))
-        );
-
-        mainPanel.add(skypeAccountPanel, "card2");
 
         jToolBar1.setRollover(true);
         jToolBar1.add(jLabel15);
@@ -1203,7 +1199,6 @@ public class SkypeDustApp extends javax.swing.JFrame {
     
     private JFileChooser jFileChooser = new JFileChooser();
     private UserAccount userAccount;
-    //private ConlistHandler conlistHandler = new ConlistHandler();
     private DefaultListModel model = new DefaultListModel();
     private DefaultTableModel tableModel = new DefaultTableModel();
     private DefaultTableModel reqpluginModel = new DefaultTableModel();
