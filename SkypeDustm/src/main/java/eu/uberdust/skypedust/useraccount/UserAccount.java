@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package eu.uberdust.skypedust.useraccount;
 
 import com.skype.api.Contact;
@@ -30,6 +26,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
+
 /**
  *
  * @author Gkatziouras Emmanouil (gkatzioura)
@@ -255,9 +252,6 @@ public class UserAccount {
             Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
             throw new UserException(UserException.Uninitialized);
         }
-    }
-    
-    public void datatoUi() {
     }
     
     public MySession getSession() {

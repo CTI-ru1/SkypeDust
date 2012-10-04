@@ -20,6 +20,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+/**
+ *
+ * @author Gkatzioura Emmanouil (gkatzioura)
+ */
 public class RestfullClient extends UberdustClient {
 
     private URL uberurl;
@@ -172,6 +176,7 @@ public class RestfullClient extends UberdustClient {
     }
         
     private String basicGet(String geturl){
+        
         try {
             HttpGet httpGet = new HttpGet(geturl);
             HttpResponse httpResponse = httpClient.execute(httpGet);

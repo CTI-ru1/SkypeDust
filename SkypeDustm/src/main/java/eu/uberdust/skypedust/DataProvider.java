@@ -1,13 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package eu.uberdust.skypedust;
-
-/**
- *
- * @author carnage
- */
 
 import eu.uberdust.skypedust.pojos.CapabilityNickname;
 import eu.uberdust.skypedust.pojos.NodeNickname;
@@ -23,6 +14,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author Gkatzioura Emmanouil (gkatzioura)
+ */
 public class DataProvider {
     
     private String framework = "embedded";
@@ -599,6 +594,7 @@ public class DataProvider {
         try {
             statement = connection.createStatement(
                     ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+    
             ResultSet resultSet = statement.executeQuery("SELECT*FROM PLUGIN");
             
             List<String[]> plugins = new ArrayList<>();
@@ -766,17 +762,11 @@ public class DataProvider {
         
         int size = 0;
         try {
+        
             while(resultSet.next()){
                 size++;
             }
-            /*
-            try {
-                resultSet.last();
-                size = resultSet.getRow();
-                resultSet.beforeFirst();
-            } catch (SQLException ex) {
-                Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
+            
         } catch (SQLException ex) {
             Logger.getLogger(DataProvider.class.getName()).log(Level.SEVERE, null, ex);
         }

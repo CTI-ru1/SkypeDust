@@ -10,7 +10,7 @@ import eu.uberdust.skypedust.util.MySession;
 
 /**
  *
- * @author carnage
+ * @author Gkatzioura Emmanouil (gkatzioura)
  */
 public class SkypeMessenger {
 

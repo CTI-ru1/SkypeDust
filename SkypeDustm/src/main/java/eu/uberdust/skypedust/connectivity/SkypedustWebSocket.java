@@ -1,13 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package eu.uberdust.skypedust.connectivity;
 
 import eu.uberdust.communication.protobuf.Message;
 import eu.uberdust.communication.websocket.readings.WSReadingsClient;
 import eu.uberdust.skypedust.DataProvider;
-import eu.uberdust.skypedust.pojos.CapabilityNickname;
+import eu.uberdust.skypedust.requestformater.DefaultNotification;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +69,12 @@ public class SkypedustWebSocket extends UberdustClient implements Observer {
             final String node = new String(reading.getReading(0).getNode());
             final String capability = new String(reading.getReading(0).getCapability());
             
+            DefaultNotification defaultNotification = new DefaultNotification();
+            defaultNotification.setNodeReadings(reading);
+            defaultNotification.setSkypeMessenger(skypeMessenger);
+            new Thread(defaultNotification).start();
             
+            /*
             new Thread(new Runnable() {
 
                 @Override
@@ -86,7 +87,7 @@ public class SkypedustWebSocket extends UberdustClient implements Observer {
  
                     dataProvider.close();
                 }
-            }).start();
+            }).start();*/
         }
     }
 }

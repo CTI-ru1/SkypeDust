@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package eu.uberdust.skypedust;
 
 import eu.uberdust.skypedust.PluginManager.PluginException;
@@ -21,7 +17,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author carnage
+ * @author Gkatzioura Emmanouil (gkatzioura)
  */
 public class SkypeDustManager {
 
