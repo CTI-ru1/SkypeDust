@@ -43,15 +43,18 @@ public class UserAccount {
     FileManage fileManage = new FileManage();
     public UserSettings userSettings;
     public boolean LoggedIn = false;
+    private boolean sessionCreated = false;
     private XmlConfs xmlConfs;
     private RequestHanlder cmdListener;
     private VoipListener voipListener;
     private SkypedustWebSocket skypedustWebSocket;
     
-    public UserAccount(){
+    public UserAccount() throws UserException{
             xmlConfs = new XmlConfs();
             userSettings = xmlConfs.readSettingsConf(fileManage.dpath+FileManage.SettingsFile);            
             userSettings.setPassword(getEncrypted());
+            startRuntime();
+            setKeypair();
     }
     
     public void setAccount(String username,String nickname,String password){
@@ -61,7 +64,7 @@ public class UserAccount {
         storeEncrypted(password);
         userSettings.setUsername(username);
         userSettings.setNickname(nickname);
-        userSettings.setNickname(password);
+        userSettings.setPassword(password);
     }
     
     public void registerAccount(String username,String fullname,String password,String email,String phonenum) throws UserException {
@@ -160,8 +163,6 @@ public class UserAccount {
     public boolean initSaccount(){
         
         try {
-            startRuntime();
-            setKeypair();
             sessionSignin();
             LogFiles.writeLoginLog(userSettings.getUsername(),0);
             return true;
@@ -185,11 +186,14 @@ public class UserAccount {
         
         try {
             
-            System.out.println("User settings "+userSettings.getUsername()+" "+userSettings.getPassword());
+            if(!sessionCreated) {
+                
+                mySession.doCreateSession(null,userSettings.getUsername().toString(), appKeyPairMgr);
+                sessionCreated = true;
+            }
             
-            mySession.doCreateSession(null,userSettings.getUsername().toString(), appKeyPairMgr);
+            System.out.println("The password "+userSettings.getPassword());
             
-
             if(!mySession.mySignInMgr.Login(null, mySession,userSettings.getPassword().toString())) {
                 throw new UserException(UserException.WrongCredentials);
             }

@@ -30,8 +30,11 @@ public class SkypeDustManager {
     private RequestHanlder requestHanlder;
     
     public SkypeDustManager() {
-        
-        userAccount = new UserAccount();
+        try {
+            userAccount = new UserAccount();
+        } catch (UserException ex) {
+            Logger.getLogger(SkypeDustManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
         dataProvider = new DataProvider();        
     }
 

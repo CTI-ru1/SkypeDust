@@ -1,6 +1,7 @@
 package eu.uberdust.skypedust;
 
 import eu.uberdust.skypedust.useraccount.UserAccount;
+import eu.uberdust.skypedust.useraccount.UserAccount.UserException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,8 +18,11 @@ public class SkypedustCmd {
     private UserAccount userAccount;
     
     public SkypedustCmd() {
-        
-        UserAccount userAccount = new UserAccount();
+        try {
+            UserAccount userAccount = new UserAccount();
+        } catch (UserException ex) {
+            Logger.getLogger(SkypedustCmd.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void start() {

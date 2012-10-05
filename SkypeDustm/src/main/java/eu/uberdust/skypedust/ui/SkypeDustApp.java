@@ -894,7 +894,14 @@ public class SkypeDustApp extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         skypeDustManager.setUserAccount(usernameTextField.getText(),nicknameTextField.getText(),passwordPasswordField.getText());
-        setFields();
+        if(skypeDustManager.isLoggedIn()) {
+            setFields();
+            cardSwitcher("card3");
+            skypeAccountItem.setVisible(false);
+        }
+        else {
+            System.out.println("Game over");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
