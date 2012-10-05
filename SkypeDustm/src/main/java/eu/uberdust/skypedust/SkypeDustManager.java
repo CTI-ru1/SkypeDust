@@ -10,7 +10,7 @@ import eu.uberdust.skypedust.pojos.PluginSettings;
 import eu.uberdust.skypedust.requestformater.CommandListener;
 import eu.uberdust.skypedust.requestformater.RequestHanlder;
 import eu.uberdust.skypedust.useraccount.UserAccount;
-import eu.uberdust.skypedust.useraccount.UserException;
+import eu.uberdust.skypedust.useraccount.UserAccount.UserException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -72,6 +72,21 @@ public class SkypeDustManager {
         else {
             startAccount();
         }
+    }
+    
+    public String RegisterAccount(String username,String nickname,String password,String email,String phonenum) {
+        
+        try {
+            userAccount.registerAccount(username, nickname, password, email, phonenum);
+            return "Account Registered";
+        } catch (UserException ex) {
+            Logger.getLogger(SkypeDustManager.class.getName()).log(Level.SEVERE, null, ex);
+            return "Account already exists";
+        }
+    }
+    
+    public void AddContact(String account,String message) {
+        userAccount.addContact(account, message);
     }
     
     public boolean isLoggedIn() {

@@ -1,7 +1,9 @@
 package eu.uberdust.skypedust.useraccount;
 
+import com.skype.api.Account;
 import com.skype.api.Contact;
 import com.skype.api.ContactGroup;
+import com.skype.api.Message;
 import eu.uberdust.skypedust.FileManage;
 import eu.uberdust.skypedust.LogFiles;
 import eu.uberdust.skypedust.appkeypair.AppKeyPairMgr;
@@ -61,6 +63,31 @@ public class UserAccount {
         userSettings.setUsername(username);
         userSettings.setNickname(nickname);
         userSettings.setNickname(password);
+    }
+    
+    public void registerAccount(String username,String fullname,String password,String email,String phonenum) throws UserException {
+            
+        try {
+            Account account = mySession.mySkype.GetAccount(username);
+            System.out.println("Account "+account.GetVerifiedEmail()+" "+account.GetSkypenameHash());
+            account.SetStrProperty(Account.PROPERTY.fullname.getId(),fullname);
+            account.Register(password, false, false, email, false);
+            account.SetStrProperty(Account.PROPERTY.phone_home.getId(), phonenum);            
+        }
+        catch (NullPointerException ex){
+            Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
+            throw new UserException(UserException.AccountExists);
+        }
+    }
+    
+    public void addContact(String contactname,String message) {
+
+        System.out.println("Coname "+contactname+" Message "+message);
+        Contact contact = mySession.mySkype.GetContact(contactname);
+        contact.SetBuddyStatus(true, true);
+        contact.SendAuthRequest(message, Contact.EXTRA_AUTHREQ_FIELDS.SEND_VERIFIED_EMAIL.getId());
+        System.out.println("Con identity "+contact.GetIdentity());
+        System.out.println("Con email"+contact.GetVerifiedEmail());
     }
     
     public void setRequestHandler(RequestHanlder requestHandler) throws UserException {
@@ -268,5 +295,18 @@ public class UserAccount {
     
     public MySession getSession() {
         return mySession;
+    }
+    
+    public class UserException extends Exception{
+    
+        public static final String KeypairProblem = "Outdated Keypair or No keypair";
+        public static final String RuntimeProblem = "Wrong Runtime Or Missing";
+        public static final String WrongCredentials = "Wrong username or password";
+        public static final String Uninitialized = "SypeDust not initialized properly";
+        public static final String AccountExists = "Skype Account already exists";
+        
+        public UserException(String message){
+            super(message);
+        }
     }
 }
