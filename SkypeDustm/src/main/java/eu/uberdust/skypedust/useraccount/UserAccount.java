@@ -3,7 +3,6 @@ package eu.uberdust.skypedust.useraccount;
 import com.skype.api.Account;
 import com.skype.api.Contact;
 import com.skype.api.ContactGroup;
-import com.skype.api.Message;
 import eu.uberdust.skypedust.FileManage;
 import eu.uberdust.skypedust.LogFiles;
 import eu.uberdust.skypedust.appkeypair.AppKeyPairMgr;
@@ -82,12 +81,14 @@ public class UserAccount {
     
     public void addContact(String contactname,String message) {
 
-        System.out.println("Coname "+contactname+" Message "+message);
         Contact contact = mySession.mySkype.GetContact(contactname);
         contact.SetBuddyStatus(true, true);
         contact.SendAuthRequest(message, Contact.EXTRA_AUTHREQ_FIELDS.SEND_VERIFIED_EMAIL.getId());
-        System.out.println("Con identity "+contact.GetIdentity());
-        System.out.println("Con email"+contact.GetVerifiedEmail());
+    }
+
+    public void removeContact(String contactname) {
+        
+        mySession.mySkype.GetContact(contactname).SetBuddyStatus(false, false);
     }
     
     public void setRequestHandler(RequestHanlder requestHandler) throws UserException {

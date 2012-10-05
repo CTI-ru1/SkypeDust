@@ -1108,12 +1108,11 @@ public class SkypeDustApp extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField8ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        //System.out.println("sdas");
-        //Object[] objects = new Object[] {"A contact",Boolean.FALSE};
-        //contactstableModel.addRow(objects);
+
         int i = jTable3.getSelectedRow();
         String contact = (String)contactstableModel.getValueAt(i, 0);
-        //skypeDustManager.r
+        skypeDustManager.removeContacts(contact);
+        skypeDustManager.removeAllowedContact(contact);
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void setcontactsTable() {

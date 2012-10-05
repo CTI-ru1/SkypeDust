@@ -89,6 +89,11 @@ public class SkypeDustManager {
         userAccount.addContact(account, message);
     }
     
+    public void removeContacts(String contact) {
+        
+        userAccount.removeContact(contact);
+    }
+    
     public boolean isLoggedIn() {
         return userAccount.LoggedIn;
     }
