@@ -147,14 +147,8 @@ public class PluginManager {
             Document document = documentBuilder.parse(inputStream);
             
             requestHandlerSettings.setRequesthandlerclass(document.getElementsByTagName(requesthandlerclass).item(0).getTextContent());
+            //requestHandlerSettings.setWebsocketHanlderclass(document.getElementsByTagName(websockethanlderclass).item(0).getTextContent());
             
-            try {
-                requestHandlerSettings.setWebsocketHanlderclass(document.getElementsByTagName(websockethanlderclass).item(0).getTextContent());
-            }
-            catch(NullPointerException ex) {
-                Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
-                
             return requestHandlerSettings;
             
         } catch (ParserConfigurationException ex) {
